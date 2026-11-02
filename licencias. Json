@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "actualizado": "2026-11-01T00:00:00.000Z",
+  "actualizado": "2026-11-02T05:52:00.818Z",
   "config": {
     "negocio": "Tug of War Pro",
     "moneda": "S/",
-    "whatsapp": "51999999999",
-    "yape": "999 999 999",
-    "titular": "Tu Nombre",
+    "whatsapp": "51972768061",
+    "yape": "971419940",
+    "titular": "Kety",
     "paypal": "",
     "sal": "tow-2026",
     "admin_pin_hash": "373aa893716a2dd907a4f76c76069349b831a1de12291775d6e59104323bd1f0",
@@ -79,6 +79,18 @@
         "Sin vencimiento",
         "Futuras preguntas incluidas"
       ]
+    },
+    {
+      "id": "planmvyubsgz",
+      "nombre": "Por día ",
+      "precio": 3,
+      "dias": 2,
+      "activo": true,
+      "destacado": false,
+      "etiqueta": "",
+      "beneficios": [
+        "Todo el contenido Pro"
+      ]
     }
   ],
   "licencias": [
@@ -93,6 +105,18 @@
       "expira": "2027-11-01",
       "estado": "activa",
       "pagado": 0
+    },
+    {
+      "id": "Lmvyu4ug5",
+      "hash": "779ae8e18db6317951a4549e77a0aa027e113696d65446ce7053822082b3d33b",
+      "ult4": "VP26",
+      "plan": "mensual",
+      "cliente": "Isaac",
+      "contacto": "51972768061",
+      "emitida": "2026-11-02",
+      "expira": "2026-12-02",
+      "estado": "activa",
+      "pagado": 9.9
     }
   ]
 }
