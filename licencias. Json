@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "actualizado": "2026-11-01T00:00:00.000Z",
+  "config": {
+    "negocio": "Tug of War Pro",
+    "moneda": "S/",
+    "whatsapp": "51999999999",
+    "yape": "999 999 999",
+    "titular": "Tu Nombre",
+    "paypal": "",
+    "sal": "tow-2026",
+    "admin_pin_hash": "373aa893716a2dd907a4f76c76069349b831a1de12291775d6e59104323bd1f0",
+    "gratis": {
+      "categorias": [
+        "geografia",
+        "ciencia"
+      ],
+      "dificultades": [
+        "facil"
+      ],
+      "partidas_por_dia": 3
+    }
+  },
+  "planes": [
+    {
+      "id": "gratis",
+      "nombre": "Gratis",
+      "precio": 0,
+      "dias": 0,
+      "activo": true,
+      "destacado": false,
+      "etiqueta": "",
+      "beneficios": [
+        "2 categorías (Geografía y Ciencia)",
+        "Dificultad Fácil",
+        "3 partidas por día"
+      ]
+    },
+    {
+      "id": "mensual",
+      "nombre": "Pro Mensual",
+      "precio": 9.9,
+      "dias": 30,
+      "activo": true,
+      "destacado": false,
+      "etiqueta": "",
+      "beneficios": [
+        "Las 6 categorías",
+        "Fácil, Medio y Difícil",
+        "Partidas ilimitadas",
+        "Renovación manual cada mes"
+      ]
+    },
+    {
+      "id": "anual",
+      "nombre": "Pro Anual",
+      "precio": 79.9,
+      "dias": 365,
+      "activo": true,
+      "destacado": true,
+      "etiqueta": "Ahorra 33%",
+      "beneficios": [
+        "Las 6 categorías",
+        "Fácil, Medio y Difícil",
+        "Partidas ilimitadas",
+        "12 meses de acceso"
+      ]
+    },
+    {
+      "id": "vitalicia",
+      "nombre": "Pro de por vida",
+      "precio": 149,
+      "dias": 0,
+      "activo": true,
+      "destacado": false,
+      "etiqueta": "Pago único",
+      "beneficios": [
+        "Todo lo de Pro",
+        "Sin vencimiento",
+        "Futuras preguntas incluidas"
+      ]
+    }
+  ],
+  "licencias": [
+    {
+      "id": "Ldemo",
+      "hash": "9efc6b0e53f86c1edded9d3019a28ab514870c631e9827b33c38b85de4939bdf",
+      "ult4": "0001",
+      "plan": "anual",
+      "cliente": "DEMO (bórrala antes de publicar)",
+      "contacto": "",
+      "emitida": "2026-11-01",
+      "expira": "2027-11-01",
+      "estado": "activa",
+      "pagado": 0
+    }
+  ]
+}
