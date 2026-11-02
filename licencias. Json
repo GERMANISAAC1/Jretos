@@ -54,7 +54,7 @@
     {
       "id": "anual",
       "nombre": "Pro Anual",
-      "precio": 79.9,
+      "precio": 39.9,
       "dias": 365,
       "activo": true,
       "destacado": true,
@@ -69,7 +69,7 @@
     {
       "id": "vitalicia",
       "nombre": "Pro de por vida",
-      "precio": 149,
+      "precio": 79,
       "dias": 0,
       "activo": true,
       "destacado": false,
