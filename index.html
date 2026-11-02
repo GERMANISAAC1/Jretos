@@ -1,1 +1,1137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tug of War Pro · Cultura General</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#2563eb;--blue-d:#1d4ed8;--blue-l:#dbeafe;--blue-ll:#eff6ff;
+  --red:#dc2626;--red-d:#b91c1c;--red-l:#fee2e2;--red-ll:#fff1f2;
+  --ink:#0f172a;--mut:#64748b;--line:#e2e8f0;--ok:#10b981;--nav:60px;
+  --shadow-sm:0 2px 4px rgba(0,0,0,.05);--shadow-md:0 10px 25px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:#e0effe;min-height:100vh;overflow-x:hidden;color:#1e293b}
+a{color:var(--blue)}
+.view{display:none}.view.active{display:block}
+
+/* ============ NAVBAR ============ */
+.topbar{position:sticky;top:0;z-index:100;height:var(--nav);background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 20px;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.brand{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.3rem;color:#1e3a8a;text-decoration:none;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.brand em{font-style:normal;background:linear-gradient(135deg,#7c3aed,var(--blue));color:#fff;font-size:.62rem;padding:2px 8px;border-radius:50px;letter-spacing:.5px;font-family:'Nunito',sans-serif;font-weight:900}
+#menu{display:flex;gap:4px;margin-left:auto;align-items:center}
+#menu a{padding:8px 14px;border-radius:50px;font-weight:800;font-size:.9rem;color:#475569;text-decoration:none;transition:.15s}
+#menu a:hover{background:var(--blue-ll);color:var(--blue)}
+#menu a.on{background:var(--blue-l);color:var(--blue-d)}
+#menu a.admin-link{border:2px solid var(--red-l);color:var(--red)}
+#menu a.admin-link:hover,#menu a.admin-link.on{background:var(--red-ll);color:var(--red-d);border-color:var(--red)}
+.chip{font-size:.75rem;font-weight:900;padding:5px 12px;border-radius:50px;background:#f1f5f9;color:#475569;white-space:nowrap;border:1px solid var(--line)}
+.chip.pro{background:linear-gradient(135deg,#7c3aed,var(--blue));color:#fff;border-color:transparent}
+.burger{display:none;background:#f1f5f9;border:none;border-radius:12px;width:42px;height:42px;font-size:1.3rem;cursor:pointer}
+@media(max-width:860px){
+  .burger{display:block}
+  .chip{margin-left:auto}
+  #menu{position:absolute;top:var(--nav);left:0;right:0;background:#fff;flex-direction:column;align-items:stretch;padding:10px 16px 16px;border-bottom:1px solid var(--line);box-shadow:var(--shadow-md);display:none;margin-left:0}
+  #menu.open{display:flex}
+  #menu a{padding:12px 16px}
+}
+
+/* ============ BOTONES / UTILIDADES ============ */
+.btn{padding:14px 28px;border-radius:50px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:900;transition:all .2s ease;box-shadow:var(--shadow-sm);text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-back{background:#f1f5f9;color:#64748b}.btn-back:hover{background:#e2e8f0;color:#334155}
+.btn-next{background:var(--blue);color:#fff}.btn-next:hover{background:var(--blue-d);box-shadow:0 4px 14px rgba(37,99,235,.35)}
+.btn-start{background:linear-gradient(135deg,#10b981,#047857);color:#fff;flex:1;font-size:1.05rem}.btn-start:hover{box-shadow:0 4px 14px rgba(16,185,129,.35)}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red-d)}
+.btn-ghost{background:#fff;color:var(--blue-d);border:2px solid var(--blue-l)}.btn-ghost:hover{border-color:var(--blue)}
+.btn-sm{padding:8px 14px;font-size:.8rem}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 20px}
+.sec-title{font-family:'Fredoka',sans-serif;font-size:2rem;color:#1e3a8a;text-align:center;margin-bottom:8px}
+.sec-sub{text-align:center;color:var(--mut);font-weight:700;margin-bottom:32px;max-width:620px;margin-inline:auto}
+.alert{border-radius:14px;padding:12px 16px;font-weight:800;font-size:.9rem;margin-bottom:16px}
+.alert.err{background:var(--red-ll);color:var(--red-d);border:1px solid var(--red-l)}
+.alert.warn{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.alert.ok{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+.panel-card{background:#fff;border-radius:24px;padding:28px 24px;box-shadow:0 25px 50px -12px rgba(0,0,0,.12);border:1px solid rgba(255,255,255,.7)}
+
+/* ============ INICIO ============ */
+.hero{position:relative;overflow:hidden;padding:56px 20px 64px;text-align:center;color:#fff;background:linear-gradient(100deg,#1e40af 0%,#2563eb 49.7%,#dc2626 50.3%,#991b1b 100%)}
+.hero::before{content:"";position:absolute;top:0;bottom:0;left:50%;border-left:5px dashed rgba(255,255,255,.55);transform:translateX(-50%)}
+.hero>*{position:relative}
+.hero h1{font-family:'Fredoka',sans-serif;font-size:clamp(2rem,5.2vw,3.6rem);line-height:1.1;text-shadow:0 3px 12px rgba(0,0,0,.3);max-width:820px;margin:0 auto 14px}
+.hero p{font-weight:700;font-size:1.1rem;max-width:560px;margin:0 auto 26px;text-shadow:0 2px 8px rgba(0,0,0,.35)}
+.hero .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:36px}
+.hero .btn-start{flex:0 0 auto;padding:16px 34px;font-size:1.1rem}
+.hero .btn-ghost{background:rgba(255,255,255,.95)}
+.demo-frame{max-width:640px;margin:0 auto;aspect-ratio:3/2;border-radius:24px;overflow:hidden;border:5px solid #fff;box-shadow:0 25px 50px -12px rgba(0,0,0,.55);background:#1e293b}
+.demo-frame video{width:100%;height:100%;object-fit:cover;display:block}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.feat{background:#fff;border-radius:20px;padding:24px 20px;box-shadow:var(--shadow-md);text-align:center}
+.feat .ic{font-size:2.2rem;margin-bottom:8px}
+.feat h3{font-size:1.05rem;color:#0f172a;margin-bottom:6px}
+.feat p{font-size:.9rem;color:var(--mut);font-weight:700;line-height:1.45}
+.cta-band{margin-top:40px;background:linear-gradient(135deg,#7c3aed,var(--blue));color:#fff;border-radius:28px;padding:36px 24px;text-align:center}
+.cta-band h2{font-family:'Fredoka',sans-serif;font-size:1.8rem;margin-bottom:8px}
+.cta-band p{font-weight:700;margin-bottom:20px;opacity:.92}
+.cta-band .btn{background:#fff;color:var(--blue-d)}
+footer.foot{text-align:center;padding:26px 16px 40px;color:var(--mut);font-weight:700;font-size:.85rem}
+footer.foot a{color:var(--mut);margin:0 8px}
+
+/* ============ PRECIOS ============ */
+.plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;align-items:stretch}
+.plan{position:relative;background:#fff;border-radius:24px;padding:30px 22px 24px;box-shadow:var(--shadow-md);border:3px solid transparent;display:flex;flex-direction:column}
+.plan.hot{border-color:var(--blue);box-shadow:0 20px 40px rgba(37,99,235,.2);transform:translateY(-6px)}
+.ribbon{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:.72rem;font-weight:900;padding:5px 14px;border-radius:50px;letter-spacing:.5px;white-space:nowrap}
+.plan h3{font-size:1.1rem;color:#1e3a8a;margin-bottom:10px}
+.price{margin-bottom:16px}.price b{font-family:'Fredoka',sans-serif;font-size:2.3rem;color:var(--ink)}.price span{color:var(--mut);font-weight:800;font-size:.85rem;margin-left:4px}
+.plan ul{list-style:none;margin-bottom:22px;flex:1}
+.plan li{padding:6px 0 6px 26px;position:relative;font-size:.92rem;font-weight:700;color:#334155}
+.plan li::before{content:"✓";position:absolute;left:0;color:var(--ok);font-weight:900}
+.plan .btn{width:100%}
+.faq{max-width:720px;margin:40px auto 0}
+.faq details{background:#fff;border-radius:16px;padding:14px 18px;margin-bottom:10px;box-shadow:var(--shadow-sm)}
+.faq summary{font-weight:900;cursor:pointer;color:#1e3a8a}
+.faq p{margin-top:8px;color:var(--mut);font-weight:700;font-size:.92rem;line-height:1.5}
+
+/* ============ MODAL / TOAST ============ */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(15,23,42,.7);backdrop-filter:blur(4px);z-index:400;justify-content:center;align-items:center;padding:16px}
+.modal-ov.show{display:flex}
+.modal{background:#fff;border-radius:24px;padding:28px 24px;max-width:460px;width:100%;box-shadow:0 25px 50px -12px rgba(0,0,0,.5);animation:popIn .35s cubic-bezier(.34,1.56,.64,1);max-height:92vh;overflow:auto}
+.modal h3{font-family:'Fredoka',sans-serif;font-size:1.5rem;color:#1e3a8a;margin-bottom:8px}
+.modal .amount{font-family:'Fredoka',sans-serif;font-size:2rem;margin-bottom:12px}.modal .amount small{font-size:.9rem;color:var(--mut);font-family:'Nunito'}
+.modal ol{margin:0 0 18px 20px;font-weight:700;line-height:1.55;color:#334155}.modal ol li{margin-bottom:8px}
+.modal-actions{display:flex;gap:10px;flex-wrap:wrap}.modal-actions .btn{flex:1}
+.keybox{background:#f8fafc;border:2px dashed var(--blue);border-radius:16px;padding:18px;text-align:center;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1.35rem;font-weight:700;letter-spacing:1px;color:#1e3a8a;margin:14px 0;word-break:break-all}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);background:#0f172a;color:#fff;padding:12px 20px;border-radius:50px;font-weight:800;font-size:.9rem;z-index:500;opacity:0;pointer-events:none;transition:.3s;display:flex;gap:12px;align-items:center;max-width:92vw;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+#toast a{color:#93c5fd;white-space:nowrap}
+
+/* ============ LICENCIA ============ */
+.lic-wrap{max-width:520px;margin:0 auto}
+.inp{width:100%;padding:13px 14px;border-radius:14px;border:2px solid var(--line);font-size:1rem;font-weight:800;font-family:'Nunito',sans-serif;outline:none;background:#f8fafc;transition:.2s}
+.inp:focus{background:#fff;border-color:var(--blue);box-shadow:0 0 0 4px rgba(37,99,235,.15)}
+.inp.key{text-align:center;font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:1px;text-transform:uppercase}
+.lic-card{text-align:center}
+.lic-card .big{font-size:3rem;margin-bottom:6px}
+.lic-card h2{font-family:'Fredoka',sans-serif;color:#1e3a8a;margin-bottom:6px}
+.kv{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-weight:800;font-size:.92rem}.kv span:first-child{color:var(--mut)}
+
+/* ============ ADMIN ============ */
+.adm{max-width:1080px;margin:0 auto;padding:28px 16px 60px}
+.adm-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.adm-head h2{font-family:'Fredoka',sans-serif;color:#1e3a8a;font-size:1.7rem}
+.adm-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.adm-tabs button{padding:10px 18px;border-radius:50px;border:2px solid var(--line);background:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:.88rem;color:#475569;cursor:pointer}
+.adm-tabs button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:#fff;border-radius:18px;padding:16px 18px;box-shadow:var(--shadow-sm)}
+.stat b{display:block;font-family:'Fredoka',sans-serif;font-size:1.8rem;color:var(--ink)}.stat span{font-size:.78rem;color:var(--mut);font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.box{background:#fff;border-radius:20px;padding:20px;box-shadow:var(--shadow-sm);margin-bottom:16px}
+.box h3{font-size:1.05rem;color:#1e3a8a;margin-bottom:12px}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.fgrid label{display:flex;flex-direction:column;gap:5px;font-size:.75rem;font-weight:900;color:var(--mut);text-transform:uppercase;letter-spacing:.4px}
+.fgrid .inp{padding:10px 12px;font-size:.95rem;text-transform:none;letter-spacing:0}
+.fgrid textarea.inp{min-height:96px;resize:vertical;font-family:inherit}
+.chk{flex-direction:row!important;align-items:center;gap:8px!important;text-transform:none!important;font-size:.88rem!important;color:#334155!important;cursor:pointer}
+.chk input{width:18px;height:18px}
+.pcard{background:#f8fafc;border:2px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
+.pcard.off{opacity:.6}
+.pcard-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-weight:900;color:#1e3a8a}
+.tbl-wrap{overflow-x:auto}
+table.tbl{width:100%;border-collapse:collapse;font-size:.88rem;font-weight:700}
+.tbl th{text-align:left;padding:10px 8px;font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);border-bottom:2px solid var(--line);white-space:nowrap}
+.tbl td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.82rem;background:#f1f5f9;padding:3px 7px;border-radius:8px}
+.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:900}
+.badge.ok{background:#d1fae5;color:#047857}.badge.no{background:var(--red-l);color:var(--red-d)}.badge.exp{background:#fef3c7;color:#92400e}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.acts .btn{padding:6px 11px;font-size:.74rem}
+.jsonview{width:100%;min-height:220px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.78rem;border-radius:14px;border:2px solid var(--line);padding:12px;background:#0f172a;color:#a5f3fc}
+.login{max-width:380px;margin:60px auto;text-align:center}
+.login h2{font-family:'Fredoka',sans-serif;color:#1e3a8a;margin-bottom:6px}.login p{color:var(--mut);font-weight:700;margin-bottom:16px;font-size:.92rem}
+
+/* ============ JUEGO ============ */
+#setup{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - var(--nav));padding:16px}
+.card{background:#fff;border-radius:24px;padding:32px 24px;width:100%;max-width:660px;box-shadow:0 25px 50px -12px rgba(0,0,0,.15);border:1px solid rgba(255,255,255,.7)}
+.card-title{font-family:'Fredoka',sans-serif;font-size:1.8rem;color:#1e3a8a;text-align:center;margin-bottom:14px;letter-spacing:.5px}
+.freebar{background:#f1f5f9;border-radius:12px;padding:8px 12px;text-align:center;font-size:.82rem;font-weight:800;color:#475569;margin-bottom:18px}
+.freebar.pro{background:linear-gradient(135deg,#ede9fe,#dbeafe);color:#4c1d95}
+.steps{display:flex;align-items:center;justify-content:center;margin-bottom:26px}
+.sdot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.9rem;background:#e2e8f0;color:#94a3b8;transition:all .3s;flex-shrink:0}
+.sdot.active{background:var(--blue);color:#fff;box-shadow:0 0 0 4px var(--blue-l),0 4px 12px rgba(37,99,235,.25)}
+.sdot.done{background:#10b981;color:#fff}
+.sline{width:50px;height:4px;background:#e2e8f0;transition:background .3s;margin:0 4px;border-radius:2px}.sline.done{background:#10b981}
+.step-lbl{font-size:.8rem;font-weight:800;color:#64748b;text-align:center;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
+.step-ttl{font-size:1.25rem;font-weight:900;color:#0f172a;text-align:center;margin-bottom:20px}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px}
+.cat-btn{position:relative;padding:18px;border-radius:16px;border:3px solid #e2e8f0;background:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;transition:all .2s;font-family:'Nunito',sans-serif}
+.cat-btn:hover{border-color:var(--blue);background:var(--blue-ll);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.cat-btn.sel{border-color:var(--blue);background:var(--blue-l);box-shadow:0 4px 12px rgba(37,99,235,.12)}
+.cat-icon{font-size:2.1rem}.cat-lbl{font-size:.88rem;font-weight:800;color:#334155}
+.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.diff-btn{position:relative;padding:16px 10px;border-radius:16px;border:3px solid #e2e8f0;background:#fff;cursor:pointer;text-align:center;transition:all .2s;font-family:'Nunito',sans-serif}
+.diff-btn:hover{border-color:var(--blue);background:var(--blue-ll);transform:translateY(-2px)}
+.diff-btn.sel{border-color:var(--blue);background:var(--blue-l)}
+.diff-nm{font-size:.95rem;font-weight:900}.diff-rng{font-size:.75rem;color:#64748b;font-weight:700;margin-top:4px}
+.locked{opacity:.6;background:#f8fafc}
+.lock{position:absolute;top:6px;right:8px;font-size:.85rem}
+.teams-row{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center}
+.tinput-wrap{display:flex;flex-direction:column;gap:6px}
+.tinput-wrap label{font-size:.8rem;font-weight:900;text-transform:uppercase;letter-spacing:.5px}
+.tinput-wrap.b label{color:var(--blue)}.tinput-wrap.r label{color:var(--red)}
+.tinput{width:100%;padding:14px;border-radius:14px;border:2px solid #e2e8f0;font-size:1rem;font-weight:800;font-family:'Nunito',sans-serif;text-align:center;outline:none;transition:all .2s;background:#f8fafc}
+.tinput:focus{background:#fff;box-shadow:0 0 0 4px rgba(37,99,235,.15)}
+.tinput-wrap.b .tinput:focus{border-color:var(--blue)}
+.tinput-wrap.r .tinput:focus{border-color:var(--red);box-shadow:0 0 0 4px rgba(220,38,38,.15)}
+.vs{font-family:'Fredoka',sans-serif;font-size:1.3rem;background:#e2e8f0;padding:12px 14px;border-radius:14px;color:#475569;text-align:center}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:26px}
+.err-msg{color:var(--red);font-size:.85rem;font-weight:700;text-align:center;margin-top:8px;min-height:20px}
+
+.sound-btn{position:fixed;bottom:20px;right:20px;width:50px;height:50px;border-radius:50%;background:#fff;border:none;cursor:pointer;font-size:1.4rem;display:none;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.15);z-index:200;transition:all .2s}
+.sound-btn:hover{transform:scale(1.1)}
+
+#game{display:none;flex-direction:column;height:calc(100vh - var(--nav));height:calc(100dvh - var(--nav));min-height:440px;overflow:hidden;background:#0f172a}
+.gh{background:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:2px solid #e2e8f0;flex-shrink:0;z-index:20;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.gh-team{display:flex;align-items:center;gap:10px}
+.gh-nm{font-size:1rem;font-weight:900;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gh-sc{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:900;box-shadow:inset 0 -2px 0 rgba(0,0,0,.1)}
+.gh-sc.pop{animation:scPop .35s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes scPop{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+.gh-team.b .gh-nm{color:var(--blue)}.gh-team.b .gh-sc{background:var(--blue);color:#fff}
+.gh-team.r .gh-nm{color:var(--red)}.gh-team.r .gh-sc{background:var(--red);color:#fff}
+.gh-timer{background:#f1f5f9;border-radius:50px;padding:6px 16px;font-size:.95rem;font-weight:900;color:#1e3a8a;display:flex;align-items:center;gap:6px;border:1px solid #e2e8f0}
+.ai-badge{background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border-radius:50px;padding:2px 8px;font-size:.65rem;font-weight:900;letter-spacing:.5px;margin-left:4px;display:inline-flex;align-items:center}
+.ai-badge.free{background:#94a3b8}
+.arena{position:relative;flex:1;overflow:hidden;min-height:0;background:#1e293b;display:flex;align-items:center;justify-content:center}
+#arena-video{position:absolute;height:100%;width:100%;top:0;left:0;object-fit:cover;transition:transform .4s cubic-bezier(.25,1,.5,1);will-change:transform;pointer-events:none}
+.center-line{position:absolute;top:0;bottom:0;left:50%;width:0;border-left:6px dashed rgba(255,255,255,.8);transform:translateX(-50%);z-index:10;pointer-events:none;filter:drop-shadow(0 0 6px rgba(0,0,0,.6))}
+.vol-vis{position:absolute;top:12px;right:12px;background:rgba(15,23,42,.75);backdrop-filter:blur(8px);border-radius:14px;padding:6px 10px;display:flex;align-items:flex-end;gap:3px;height:32px;z-index:20;opacity:0;transition:opacity .3s;pointer-events:none;border:1px solid rgba(255,255,255,.1)}
+.vol-vis.show{opacity:1}
+.vb{width:4px;border-radius:2px;background:#10b981;min-height:3px;transition:height linear .08s}
+.panels{display:grid;grid-template-columns:1fr 1fr;flex-shrink:0;border-top:3px solid #cbd5e1;background:#f8fafc;z-index:15}
+.panel{display:flex;flex-direction:column;background:#fff;position:relative}
+.panel.b{border-right:2px solid #cbd5e1}
+.p-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
+.panel.b .p-hdr{background:var(--blue)}.panel.r .p-hdr{background:var(--red)}
+.p-nm{font-size:.9rem;font-weight:900;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
+.p-sc{width:28px;height:28px;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:.95rem;font-weight:900}
+.panel.b .p-sc{color:var(--blue)}.panel.r .p-sc{color:var(--red)}
+.p-body{padding:10px;display:flex;flex-direction:column;gap:8px;flex:1}
+.eq-box{border-radius:14px;padding:14px 10px;text-align:center;min-height:85px;display:flex;align-items:center;justify-content:center;border:1px solid transparent}
+.panel.b .eq-box{background:var(--blue-ll);border-color:rgba(37,99,235,.08)}
+.panel.r .eq-box{background:var(--red-ll);border-color:rgba(220,38,38,.08)}
+.eq-txt{font-size:1.05rem;font-weight:800;line-height:1.4}
+.panel.b .eq-txt{color:#1e3a8a}.panel.r .eq-txt{color:#991b1b}
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0;min-height:90px;width:100%}
+.opt-btn{padding:12px 6px;border-radius:12px;border:2px solid #e2e8f0;background:#fff;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:800;transition:all .15s;color:#334155;box-shadow:0 2px 4px rgba(0,0,0,.02);display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.2}
+.opt-btn:hover:not(:disabled){transform:scale(.98);box-shadow:none}
+.panel.b .opt-btn:hover:not(:disabled){border-color:var(--blue);background:var(--blue-ll)}
+.panel.r .opt-btn:hover:not(:disabled){border-color:var(--red);background:var(--red-ll)}
+.opt-btn:disabled{opacity:.5;cursor:not-allowed;background:#f1f5f9;border-color:#e2e8f0;color:#94a3b8}
+.fb{text-align:center;font-size:.9rem;font-weight:800;min-height:24px;display:flex;align-items:center;justify-content:center;gap:4px}
+.fb-ok{color:#10b981;animation:pulse .3s}.fb-err{color:var(--red);animation:shake .3s}
+@keyframes pulse{0%{transform:scale(.9)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@keyframes flashGreen{0%,100%{background:#fff}35%{background:#dcfce7}}
+@keyframes flashRed{0%,100%{background:#fff}35%{background:#fee2e2}}
+.flash-ok{animation:flashGreen .45s}.flash-err{animation:flashRed .45s}
+.hint{background:#f1f5f9;border-top:1px solid #e2e8f0;padding:6px;text-align:center;font-size:.78rem;font-weight:700;color:#64748b;flex-shrink:0}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.85);backdrop-filter:blur(4px);z-index:300;justify-content:center;align-items:center;padding:16px}
+.overlay.show{display:flex}
+.win-card{background:#fff;border-radius:28px;padding:36px 28px;text-align:center;box-shadow:0 25px 50px -12px rgba(0,0,0,.5);animation:popIn .45s cubic-bezier(.34,1.56,.64,1);max-width:440px;width:100%}
+@keyframes popIn{from{transform:scale(.7) translateY(30px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.wt{font-size:3.8rem;margin-bottom:8px}
+.wn{font-family:'Fredoka',sans-serif;font-size:2.1rem;margin-bottom:4px}
+.ws{font-size:.95rem;color:#64748b;font-weight:800;margin-bottom:20px;text-transform:uppercase;letter-spacing:.5px}
+.wstats{display:flex;gap:12px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.wstat{background:#f8fafc;border-radius:14px;padding:10px 16px;font-size:.85rem;font-weight:700;color:#475569;border:1px solid #e2e8f0;min-width:85px}
+.wstat strong{display:block;font-size:1.4rem;font-weight:900;color:#0f172a;margin-bottom:2px}
+.winup{display:none;margin-bottom:16px;font-size:.85rem;font-weight:800;background:linear-gradient(135deg,#ede9fe,#dbeafe);color:#4c1d95;border-radius:12px;padding:10px;text-decoration:none}
+.wbtns{display:flex;gap:10px;justify-content:center}
+.wb{padding:12px 26px;border-radius:50px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:900;transition:all .2s;box-shadow:var(--shadow-sm)}
+.wb.prim{background:var(--blue);color:#fff;flex:1}.wb.prim:hover{background:var(--blue-d)}
+.wb.sec{background:#f1f5f9;color:#475569}.wb.sec:hover{background:#e2e8f0}
+.cp{position:fixed;pointer-events:none;z-index:299;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{0%{transform:translateY(-30px) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+@media(max-width:520px){.teams-row{grid-template-columns:1fr}.vs{justify-self:center}.eq-txt{font-size:.92rem}.opt-btn{font-size:.8rem}}
+</style>
+</head>
+<body>
+
+<!-- ======================== MENÚ DE NAVEGACIÓN ======================== -->
+<header class="topbar">
+  <a class="brand" href="#inicio">🏆 Tug of War <em>PRO</em></a>
+  <nav id="menu" aria-label="Navegación principal">
+    <a href="#inicio" data-view="inicio">Inicio</a>
+    <a href="#jugar" data-view="jugar">Jugar</a>
+    <a href="#precios" data-view="precios">Precios</a>
+    <a href="#licencia" data-view="licencia">Mi licencia</a>
+    <a href="#admin" data-view="admin" class="admin-link">🔐 Admin</a>
+  </nav>
+  <span class="chip" id="planChip">Plan Gratis</span>
+  <button class="burger" id="burger" aria-label="Abrir menú" aria-expanded="false">☰</button>
+</header>
+
+<!-- ======================== INICIO ======================== -->
+<section id="v-inicio" class="view">
+  <div class="hero">
+    <h1>¡Jala la cuerda con tu cultura general!</h1>
+    <p>Dos equipos, una pantalla. Responde más rápido que tus rivales y arrastra el video hacia tu lado para ganar.</p>
+    <div class="cta">
+      <a class="btn btn-start" href="#jugar">🚀 Jugar ahora</a>
+      <a class="btn btn-ghost" href="#precios">⭐ Ver planes Pro</a>
+    </div>
+    <div class="demo-frame"><video src="main.mp4" autoplay loop muted playsinline preload="auto"></video></div>
+  </div>
+  <div class="wrap">
+    <h2 class="sec-title">Todo lo que necesitas para animar el aula o la reunión</h2>
+    <p class="sec-sub">Sin instalar nada. Funciona en el celular, tablet o computadora.</p>
+    <div class="feat-grid">
+      <div class="feat"><div class="ic">⚔️</div><h3>2 equipos, 1 pantalla</h3><p>Cada equipo tiene su panel y responde en simultáneo.</p></div>
+      <div class="feat"><div class="ic">🌍</div><h3>6 categorías</h3><p>Geografía, historia, ciencia, entretenimiento, deportes y arte.</p></div>
+      <div class="feat"><div class="ic">🎚️</div><h3>3 niveles</h3><p>Fácil, medio y difícil para todas las edades.</p></div>
+      <div class="feat"><div class="ic">🔁</div><h3>Sin repetir</h3><p>Cada equipo recibe preguntas distintas durante la partida.</p></div>
+    </div>
+    <div class="cta-band">
+      <h2>Desbloquea todo con Pro</h2>
+      <p>Todas las categorías, todas las dificultades y partidas ilimitadas.</p>
+      <a class="btn" href="#precios">Ver precios</a>
+    </div>
+  </div>
+  <footer class="foot"><span class="neg"></span> · <a href="#precios">Precios</a><a href="#licencia">Mi licencia</a><a href="#admin">Admin</a></footer>
+</section>
+
+<!-- ======================== JUGAR ======================== -->
+<section id="v-jugar" class="view">
+  <button class="sound-btn" id="soundBtn" onclick="toggleMute()">🔊</button>
+
+  <div id="setup">
+  <div class="card">
+    <div class="card-title">🏆 TUG OF WAR: CULTURA GENERAL</div>
+    <div class="freebar" id="freeBar"></div>
+    <div class="steps">
+      <div class="sdot active" id="d1">1</div><div class="sline" id="l1"></div>
+      <div class="sdot" id="d2">2</div><div class="sline" id="l2"></div>
+      <div class="sdot" id="d3">3</div>
+    </div>
+
+    <div id="s1">
+      <div class="step-lbl">Paso 1 de 3</div>
+      <div class="step-ttl">Selecciona las categorías</div>
+      <div class="cat-grid">
+        <button class="cat-btn sel" data-cat="geografia" onclick="toggleCat(this)"><span class="cat-icon">🌍</span><span class="cat-lbl">Geografía</span></button>
+        <button class="cat-btn" data-cat="historia" onclick="toggleCat(this)"><span class="cat-icon">📜</span><span class="cat-lbl">Historia</span></button>
+        <button class="cat-btn" data-cat="ciencia" onclick="toggleCat(this)"><span class="cat-icon">🔬</span><span class="cat-lbl">Ciencia</span></button>
+        <button class="cat-btn" data-cat="entretenimiento" onclick="toggleCat(this)"><span class="cat-icon">🎬</span><span class="cat-lbl">Entretenimiento</span></button>
+        <button class="cat-btn" data-cat="deportes" onclick="toggleCat(this)"><span class="cat-icon">⚽</span><span class="cat-lbl">Deportes</span></button>
+        <button class="cat-btn" data-cat="arte" onclick="toggleCat(this)"><span class="cat-icon">🎨</span><span class="cat-lbl">Arte y Cultura</span></button>
+      </div>
+      <div class="err-msg" id="err1"></div>
+      <div class="nav"><div></div><button class="btn btn-next" onclick="gostep(2)">Siguiente →</button></div>
+    </div>
+
+    <div id="s2" style="display:none">
+      <div class="step-lbl">Paso 2 de 3</div>
+      <div class="step-ttl">Nivel de dificultad</div>
+      <div class="diff-grid">
+        <button class="diff-btn sel" data-diff="facil" onclick="selDiff(this)"><div class="diff-nm">🟢 Fácil</div><div class="diff-rng">Preguntas básicas</div></button>
+        <button class="diff-btn" data-diff="medio" onclick="selDiff(this)"><div class="diff-nm">🟡 Medio</div><div class="diff-rng">Conocimiento general</div></button>
+        <button class="diff-btn" data-diff="dificil" onclick="selDiff(this)"><div class="diff-nm">🔴 Difícil</div><div class="diff-rng">Para expertos</div></button>
+      </div>
+      <div class="nav">
+        <button class="btn btn-back" onclick="gostep(1)">← Atrás</button>
+        <button class="btn btn-next" onclick="gostep(3)">Siguiente →</button>
+      </div>
+    </div>
+
+    <div id="s3" style="display:none">
+      <div class="step-lbl">Paso 3 de 3</div>
+      <div class="step-ttl">Nombres de los equipos</div>
+      <div class="teams-row">
+        <div class="tinput-wrap b"><label>🔵 Equipo Azul</label><input class="tinput" id="n1" value="Sabios" maxlength="14"></div>
+        <div class="vs">VS</div>
+        <div class="tinput-wrap r"><label>🔴 Equipo Rojo</label><input class="tinput" id="n2" value="Genios" maxlength="14"></div>
+      </div>
+      <div class="nav">
+        <button class="btn btn-back" onclick="gostep(2)">← Atrás</button>
+        <button class="btn btn-start" onclick="startGame()">🚀 ¡Comenzar!</button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div id="game">
+    <div class="gh">
+      <div class="gh-team b"><div class="gh-sc" id="ghsc1">0</div><div class="gh-nm" id="ghn1">Sabios</div></div>
+      <div class="gh-timer">⏱ <span id="clk">00:00</span> <span class="ai-badge" id="proBadge">✨PRO</span></div>
+      <div class="gh-team r"><div class="gh-nm" id="ghn2">Genios</div><div class="gh-sc" id="ghsc2">0</div></div>
+    </div>
+    <div class="arena" id="arena">
+      <video id="arena-video" autoplay loop muted playsinline><source src="main.mp4" type="video/mp4"></video>
+      <div class="vol-vis" id="volVis">
+        <div class="vb" style="height:4px"></div><div class="vb" style="height:10px"></div><div class="vb" style="height:16px"></div><div class="vb" style="height:10px"></div><div class="vb" style="height:4px"></div>
+      </div>
+      <div class="center-line"></div>
+    </div>
+    <div class="panels">
+      <div class="panel b" id="pb1">
+        <div class="p-hdr"><span class="p-nm" id="pn1">Sabios</span><span class="p-sc" id="ps1">0</span></div>
+        <div class="p-body"><div class="eq-box"><div class="eq-txt" id="eq1">Cargando...</div></div><div class="options-grid" id="opts1"></div><div class="fb" id="fb1"></div></div>
+      </div>
+      <div class="panel r" id="pb2">
+        <div class="p-hdr"><span class="p-nm" id="pn2">Genios</span><span class="p-sc" id="ps2">0</span></div>
+        <div class="p-body"><div class="eq-box"><div class="eq-txt" id="eq2">Cargando...</div></div><div class="options-grid" id="opts2"></div><div class="fb" id="fb2"></div></div>
+      </div>
+    </div>
+    <div class="hint">🎯 Responde rápido para arrastrar la pantalla hacia tu lado y ganar</div>
+  </div>
+
+  <div class="overlay" id="ov">
+    <div class="win-card">
+      <div class="wt">🏆</div>
+      <div class="wn" id="wn"></div>
+      <div class="ws">¡Victoria Absoluta!</div>
+      <div class="wstats">
+        <div class="wstat"><strong id="wsc1">0</strong><span id="wsn1">Sabios</span></div>
+        <div class="wstat"><strong id="wsc2">0</strong><span id="wsn2">Genios</span></div>
+        <div class="wstat"><strong id="wst">00:00</strong>Tiempo</div>
+      </div>
+      <a class="winup" id="winUp" href="#precios">⭐ ¿Más categorías y partidas ilimitadas? Mira los planes Pro</a>
+      <div class="wbtns">
+        <button class="wb sec" onclick="backSetup()">⚙️ Configurar</button>
+        <button class="wb prim" onclick="restartGame()">🔄 Jugar de Nuevo</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== PRECIOS ======================== -->
+<section id="v-precios" class="view">
+  <div class="wrap">
+    <h2 class="sec-title">Elige tu plan</h2>
+    <p class="sec-sub">Empieza gratis y pasa a Pro cuando quieras. Pago por Yape/Plin o PayPal; recibes tu clave de licencia por WhatsApp.</p>
+    <div class="plan-grid" id="planGrid"></div>
+    <div class="faq">
+      <details><summary>¿Cómo recibo mi licencia?</summary><p>Haz clic en “Comprar”, realiza el pago y envía el comprobante por WhatsApp. Te enviamos una clave con formato TOW-XXXX-XXXX-XXXX.</p></details>
+      <details><summary>¿Dónde activo mi clave?</summary><p>En la sección <a href="#licencia">Mi licencia</a>. Se activa al instante y se guarda en tu dispositivo.</p></details>
+      <details><summary>¿Qué pasa cuando vence?</summary><p>Vuelves al plan Gratis automáticamente. Puedes renovar con una nueva compra y tu clave se extiende.</p></details>
+    </div>
+  </div>
+  <footer class="foot"><span class="neg"></span></footer>
+</section>
+
+<!-- ======================== MI LICENCIA ======================== -->
+<section id="v-licencia" class="view">
+  <div class="wrap">
+    <h2 class="sec-title">Mi licencia</h2>
+    <p class="sec-sub">Activa tu clave para desbloquear todo el contenido Pro en este dispositivo.</p>
+    <div class="lic-wrap"><div class="panel-card" id="licBody"></div></div>
+  </div>
+</section>
+
+<!-- ======================== ADMIN ======================== -->
+<section id="v-admin" class="view">
+  <div class="adm" id="admRoot"></div>
+</section>
+
+<div class="modal-ov" id="modalOv"><div class="modal" id="modalBox"></div></div>
+<div id="toast"></div>
+
+<script>
+/* =====================================================================
+   UTILIDADES
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const mem = {};
+const LS = {
+  get(k, d){ try { const v = localStorage.getItem(k); if (v !== null) return JSON.parse(v); } catch(e){} return (k in mem) ? mem[k] : d; },
+  set(k, v){ mem[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} },
+  del(k){ delete mem[k]; try { localStorage.removeItem(k); } catch(e){} }
+};
+
+/* SHA-256 en JS puro (funciona también al abrir el archivo con doble clic) */
+function sha256(s){
+  s = unescape(encodeURIComponent(s));
+  const rr=(v,a)=>(v>>>a)|(v<<(32-a)), mp=Math.pow, mw=mp(2,32);
+  let i,j,result='', words=[], bl=s.length*8;
+  let hash=sha256.h=sha256.h||[], k=sha256.k=sha256.k||[], pc=k.length, comp={};
+  for(let c=2;pc<64;c++){ if(!comp[c]){ for(i=0;i<313;i+=c) comp[i]=c; hash[pc]=(mp(c,.5)*mw)|0; k[pc++]=(mp(c,1/3)*mw)|0; } }
+  s+='\x80'; while(s.length%64-56) s+='\x00';
+  for(i=0;i<s.length;i++){ j=s.charCodeAt(i); words[i>>2]|=j<<((3-i)%4)*8; }
+  words[words.length]=((bl/mw)|0); words[words.length]=bl;
+  for(j=0;j<words.length;){
+    const w=words.slice(j,j+=16), old=hash; hash=hash.slice(0,8);
+    for(i=0;i<64;i++){
+      const w15=w[i-15], w2=w[i-2], a=hash[0], e=hash[4];
+      const t1=hash[7]+(rr(e,6)^rr(e,11)^rr(e,25))+((e&hash[5])^((~e)&hash[6]))+k[i]+(w[i]=(i<16)?w[i]:(w[i-16]+(rr(w15,7)^rr(w15,18)^(w15>>>3))+w[i-7]+(rr(w2,17)^rr(w2,19)^(w2>>>10)))|0);
+      const t2=(rr(a,2)^rr(a,13)^rr(a,22))+((a&hash[1])^(a&hash[2])^(hash[1]&hash[2]));
+      hash=[(t1+t2)|0].concat(hash); hash[4]=(hash[4]+t1)|0;
+    }
+    for(i=0;i<8;i++) hash[i]=(hash[i]+old[i])|0;
+  }
+  for(i=0;i<8;i++) for(j=3;j+1;j--){ const b=(hash[i]>>(j*8))&255; result+=((b<16)?0:'')+b.toString(16); }
+  return result;
+}
+
+const hoy = () => new Date().toLocaleDateString('en-CA');
+const addDays = (iso,n) => { const d=new Date(iso+'T12:00:00'); d.setDate(d.getDate()+n); return d.toLocaleDateString('en-CA'); };
+const fmtD = iso => iso ? new Date(iso+'T12:00:00').toLocaleDateString('es-PE',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+const diasRest = iso => Math.ceil((new Date(iso+'T23:59:59') - new Date())/864e5);
+
+let toastT;
+function toast(msg, act){
+  const t=$('toast'); t.innerHTML = esc(msg) + (act ? ` <a href="${act.href}">${esc(act.label)}</a>` : '');
+  t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'), 3800);
+}
+function openModal(html){ $('modalBox').innerHTML=html; $('modalOv').classList.add('show'); }
+function closeModal(){ $('modalOv').classList.remove('show'); }
+function copyText(t){
+  const ok=()=>toast('✅ Copiado al portapapeles');
+  if(navigator.clipboard && window.isSecureContext){ navigator.clipboard.writeText(t).then(ok).catch(()=>fb()); } else fb();
+  function fb(){ const a=document.createElement('textarea'); a.value=t; a.style.position='fixed'; a.style.opacity='0'; document.body.appendChild(a); a.select(); try{document.execCommand('copy');ok();}catch(e){toast(t);} a.remove(); }
+}
+function download(name, text){
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:'application/json'})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+/* =====================================================================
+   BASE DE DATOS (licencias.json)
+   - Se lee licencias.json del servidor.
+   - Si no existe (p. ej. abres el archivo con doble clic), usa la copia embebida.
+   - El admin edita en su navegador y descarga el JSON actualizado para subirlo.
+   ===================================================================== */
+const DEFAULT_DB = {"version": 1, "actualizado": "2026-11-01T00:00:00.000Z", "config": {"negocio": "Tug of War Pro", "moneda": "S/", "whatsapp": "51999999999", "yape": "999 999 999", "titular": "Tu Nombre", "paypal": "", "sal": "tow-2026", "admin_pin_hash": "373aa893716a2dd907a4f76c76069349b831a1de12291775d6e59104323bd1f0", "gratis": {"categorias": ["geografia", "ciencia"], "dificultades": ["facil"], "partidas_por_dia": 3}}, "planes": [{"id": "gratis", "nombre": "Gratis", "precio": 0, "dias": 0, "activo": true, "destacado": false, "etiqueta": "", "beneficios": ["2 categorías (Geografía y Ciencia)", "Dificultad Fácil", "3 partidas por día"]}, {"id": "mensual", "nombre": "Pro Mensual", "precio": 9.9, "dias": 30, "activo": true, "destacado": false, "etiqueta": "", "beneficios": ["Las 6 categorías", "Fácil, Medio y Difícil", "Partidas ilimitadas", "Renovación manual cada mes"]}, {"id": "anual", "nombre": "Pro Anual", "precio": 79.9, "dias": 365, "activo": true, "destacado": true, "etiqueta": "Ahorra 33%", "beneficios": ["Las 6 categorías", "Fácil, Medio y Difícil", "Partidas ilimitadas", "12 meses de acceso"]}, {"id": "vitalicia", "nombre": "Pro de por vida", "precio": 149, "dias": 0, "activo": true, "destacado": false, "etiqueta": "Pago único", "beneficios": ["Todo lo de Pro", "Sin vencimiento", "Futuras preguntas incluidas"]}], "licencias": [{"id": "Ldemo", "hash": "9efc6b0e53f86c1edded9d3019a28ab514870c631e9827b33c38b85de4939bdf", "ult4": "0001", "plan": "anual", "cliente": "DEMO (bórrala antes de publicar)", "contacto": "", "emitida": "2026-11-01", "expira": "2027-11-01", "estado": "activa", "pagado": 0}]};
+let DB = null, REMOTE_DB = null, DB_SRC = 'embebido';
+
+async function loadDB(){
+  let remote = null;
+  try { const r = await fetch('licencias.json?v=' + Date.now(), {cache:'no-store'}); if (r.ok) { remote = await r.json(); DB_SRC = 'licencias.json'; } } catch(e){}
+  REMOTE_DB = remote && remote.planes && remote.config ? remote : DEFAULT_DB;
+  const local = LS.get('tow_db_admin', null);
+  DB = local || JSON.parse(JSON.stringify(REMOTE_DB));
+  DB.licencias = DB.licencias || [];
+}
+const saveDB = () => { DB.actualizado = new Date().toISOString(); LS.set('tow_db_admin', DB); };
+
+const plan = id => DB.planes.find(p => p.id === id);
+const money = n => DB.config.moneda + ' ' + (Number(n) % 1 ? Number(n).toFixed(2) : Number(n));
+function periodo(p){ if(!p.precio) return 'para siempre'; if(p.dias===30) return '/ mes'; if(p.dias===365) return '/ año'; if(!p.dias) return 'pago único'; return '/ ' + p.dias + ' días'; }
+
+/* ----- Licencias ----- */
+const canon = k => String(k).toUpperCase().replace(/[^A-Z0-9]/g, '');
+const licHash = k => sha256(DB.config.sal + canon(k));
+function genKey(){
+  const cs='ABCDEFGHJKLMNPQRSTUVWXYZ23456789', a=new Uint32Array(12);
+  if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(a); else for(let i=0;i<12;i++) a[i]=Math.random()*4e9;
+  let s=''; for(let i=0;i<12;i++){ s+=cs[a[i]%cs.length]; if(i%4===3 && i<11) s+='-'; }
+  return 'TOW-' + s;
+}
+function estadoLic(l){
+  if(!l) return {ok:false, msg:'Clave no encontrada. Revisa que esté bien escrita.'};
+  if(l.estado !== 'activa') return {ok:false, msg:'Esta licencia fue revocada. Contacta a soporte.'};
+  if(l.expira && diasRest(l.expira) < 0) return {ok:false, msg:'Esta licencia venció el ' + fmtD(l.expira) + '. Renueva para seguir con Pro.'};
+  return {ok:true};
+}
+function licActual(){
+  const s = LS.get('tow_lic', null); if(!s) return null;
+  const l = DB.licencias.find(x => x.hash === s.hash);
+  return estadoLic(l).ok ? {lic:l, plan:plan(l.plan) || {nombre:'Pro'}} : null;
+}
+const isPro = () => !!licActual();
+function renderChip(){
+  const c=licActual(), el=$('planChip');
+  el.textContent = c ? '✨ ' + c.plan.nombre : 'Plan Gratis';
+  el.className = 'chip' + (c ? ' pro' : '');
+  document.querySelectorAll('.neg').forEach(n => n.textContent = '© ' + new Date().getFullYear() + ' ' + DB.config.negocio);
+}
+
+/* =====================================================================
+   ROUTER (menú de navegación)
+   ===================================================================== */
+const VIEWS = ['inicio','jugar','precios','licencia','admin'];
+let current = null;
+function route(){
+  let v = (location.hash || '#inicio').slice(1); if(!VIEWS.includes(v)) v = 'inicio';
+  if(current === 'jugar' && v !== 'jugar') abortGame();
+  current = v;
+  VIEWS.forEach(x => $('v-' + x).classList.toggle('active', x === v));
+  document.querySelectorAll('#menu a').forEach(a => a.classList.toggle('on', a.dataset.view === v));
+  $('menu').classList.remove('open'); $('burger').setAttribute('aria-expanded','false');
+  window.scrollTo(0,0);
+  if(v==='precios') renderPricing();
+  if(v==='licencia') renderLicense();
+  if(v==='admin') renderAdmin();
+  if(v==='jugar') applyLocks();
+}
+window.addEventListener('hashchange', route);
+$('burger').onclick = () => { const o=$('menu').classList.toggle('open'); $('burger').setAttribute('aria-expanded', o); };
+
+/* =====================================================================
+   PRECIOS / COMPRA
+   ===================================================================== */
+function renderPricing(){
+  const cur = licActual();
+  $('planGrid').innerHTML = DB.planes.filter(p => p.activo !== false).map(p => `
+    <article class="plan ${p.destacado ? 'hot' : ''}">
+      ${p.etiqueta ? `<div class="ribbon">${esc(p.etiqueta)}</div>` : ''}
+      <h3>${esc(p.nombre)}</h3>
+      <div class="price"><b>${p.precio ? money(p.precio) : 'Gratis'}</b><span>${periodo(p)}</span></div>
+      <ul>${(p.beneficios||[]).map(b => `<li>${esc(b)}</li>`).join('')}</ul>
+      ${p.precio
+        ? (cur && cur.plan.id === p.id ? '<button class="btn btn-ghost" disabled>Tu plan actual</button>' : `<button class="btn ${p.destacado ? 'btn-next' : 'btn-ghost'}" data-buy="${esc(p.id)}">Comprar</button>`)
+        : '<a class="btn btn-ghost" href="#jugar">Jugar gratis</a>'}
+    </article>`).join('');
+}
+function openBuy(id){
+  const p = plan(id), c = DB.config; if(!p) return;
+  const msg = `Hola, quiero la licencia ${p.nombre} (${money(p.precio)}) de ${c.negocio}. Te envío mi comprobante de pago.`;
+  const wa = 'https://wa.me/' + String(c.whatsapp).replace(/\D/g,'') + '?text=' + encodeURIComponent(msg);
+  const pp = /^https:\/\//.test(c.paypal || '') ? ` También puedes pagar con <a href="${esc(c.paypal)}" target="_blank" rel="noopener">PayPal</a>.` : '';
+  openModal(`
+    <h3>Comprar ${esc(p.nombre)}</h3>
+    <div class="amount">${money(p.precio)} <small>${periodo(p)}</small></div>
+    <ol>
+      <li><b>Paga</b> por Yape o Plin al <b>${esc(c.yape)}</b> a nombre de <b>${esc(c.titular)}</b>.${pp}</li>
+      <li><b>Envía</b> tu comprobante por WhatsApp.</li>
+      <li><b>Recibe</b> tu clave y actívala en <a href="#licencia">Mi licencia</a>.</li>
+    </ol>
+    <div class="modal-actions">
+      <a class="btn btn-start" href="${wa}" target="_blank" rel="noopener">💬 Enviar comprobante</a>
+      <button class="btn btn-back" data-close>Cerrar</button>
+    </div>`);
+}
+
+/* =====================================================================
+   MI LICENCIA
+   ===================================================================== */
+function renderLicense(){
+  const s = LS.get('tow_lic', null), cur = licActual(), box = $('licBody');
+  if(cur){
+    const l = cur.lic, d = l.expira ? diasRest(l.expira) : null;
+    box.innerHTML = `<div class="lic-card">
+      <div class="big">✨</div><h2>Licencia ${esc(cur.plan.nombre)} activa</h2>
+      <p style="color:var(--mut);font-weight:700;margin-bottom:14px">Todo el contenido está desbloqueado en este dispositivo.</p>
+      <div class="kv"><span>Titular</span><span>${esc(l.cliente)}</span></div>
+      <div class="kv"><span>Clave</span><span><code>TOW-••••-••••-${esc(l.ult4)}</code></span></div>
+      <div class="kv"><span>Vence</span><span>${l.expira ? fmtD(l.expira) + ' (' + d + ' días)' : 'Nunca · de por vida'}</span></div>
+      <div class="modal-actions" style="margin-top:20px"><a class="btn btn-start" href="#jugar">🚀 Jugar ahora</a><button class="btn btn-back" data-act="desactivar">Quitar de este dispositivo</button></div>
+    </div>`;
+  } else {
+    let note = '';
+    if(s){ const l = DB.licencias.find(x => x.hash === s.hash); note = `<div class="alert err">${esc(estadoLic(l).msg)}</div>`; }
+    box.innerHTML = `${note}
+      <div class="lic-card"><div class="big">🔑</div><h2>Activa tu licencia</h2></div>
+      <input class="inp key" id="licKey" placeholder="TOW-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false" data-enter="activar">
+      <div class="err-msg" id="licErr"></div>
+      <button class="btn btn-start" style="width:100%" data-act="activar">Activar licencia</button>
+      <p style="text-align:center;margin-top:14px;font-weight:700;color:var(--mut);font-size:.9rem">¿Aún no tienes una? <a href="#precios">Ver planes</a></p>`;
+  }
+}
+function activar(){
+  const k = $('licKey').value; if(!canon(k)){ $('licErr').textContent='Escribe tu clave.'; return; }
+  const h = licHash(k), l = DB.licencias.find(x => x.hash === h), r = estadoLic(l);
+  if(!r.ok){ $('licErr').textContent = r.msg; return; }
+  LS.set('tow_lic', {hash:h}); renderChip(); renderLicense(); toast('🎉 ¡Licencia activada!');
+}
+
+/* =====================================================================
+   ADMIN
+   ===================================================================== */
+let adminOK = false, admTab = 'resumen', fails = 0, lockUntil = 0;
+try { adminOK = sessionStorage.getItem('tow_admin') === '1'; } catch(e){}
+const CATS = [['geografia','🌍 Geografía'],['historia','📜 Historia'],['ciencia','🔬 Ciencia'],['entretenimiento','🎬 Entretenimiento'],['deportes','⚽ Deportes'],['arte','🎨 Arte y Cultura']];
+const DIFFS = [['facil','🟢 Fácil'],['medio','🟡 Medio'],['dificil','🔴 Difícil']];
+
+function renderAdmin(){
+  const root = $('admRoot');
+  if(!adminOK){
+    root.innerHTML = `<div class="panel-card login"><div style="font-size:2.6rem">🔐</div><h2>Panel de administración</h2><p>Ingresa tu PIN para gestionar precios y licencias.</p>
+      <input class="inp" id="pin" type="password" placeholder="PIN" autocomplete="off" data-enter="login" style="text-align:center;margin-bottom:6px">
+      <div class="err-msg" id="pinErr"></div>
+      <button class="btn btn-red" style="width:100%" data-act="login">Entrar</button></div>`;
+    return;
+  }
+  const tabs = [['resumen','📊 Resumen'],['precios','💰 Precios'],['licencias','🔑 Licencias'],['ajustes','⚙️ Ajustes'],['datos','📦 Datos / JSON']];
+  root.innerHTML = `
+    <div class="adm-head"><h2>Panel de administración</h2><button class="btn btn-back btn-sm" data-act="logout">Salir</button></div>
+    ${LS.get('tow_db_admin',null) ? `<div class="alert warn">Tus cambios se guardan en este navegador. Para publicarlos a tus clientes, <b>descarga licencias.json</b> y reemplaza el archivo en tu hosting. <button class="btn btn-next btn-sm" style="margin-left:8px" data-act="dl">⬇ Descargar JSON</button></div>` : ''}
+    <div class="adm-tabs">${tabs.map(t => `<button class="${admTab===t[0]?'on':''}" data-tab="${t[0]}">${t[1]}</button>`).join('')}</div>
+    <div id="admBody">${({resumen:tabResumen,precios:tabPrecios,licencias:tabLicencias,ajustes:tabAjustes,datos:tabDatos})[admTab]()}</div>`;
+}
+function login(){
+  if(Date.now() < lockUntil){ $('pinErr').textContent = 'Demasiados intentos. Espera unos segundos.'; return; }
+  if(sha256(DB.config.sal + $('pin').value) === DB.config.admin_pin_hash){
+    adminOK = true; fails = 0; try{ sessionStorage.setItem('tow_admin','1'); }catch(e){} renderAdmin();
+  } else { fails++; if(fails >= 5){ lockUntil = Date.now() + 30000; fails = 0; } $('pinErr').textContent = 'PIN incorrecto.'; }
+}
+
+/* ----- Resumen ----- */
+function tabResumen(){
+  const L = DB.licencias, act = L.filter(l => estadoLic(l).ok);
+  const pronto = act.filter(l => l.expira && diasRest(l.expira) <= 7).length;
+  const ing = L.reduce((s,l) => s + (Number(l.pagado)||0), 0);
+  const rec = L.slice(-6).reverse();
+  return `<div class="stats">
+    <div class="stat"><b>${act.length}</b><span>Licencias activas</span></div>
+    <div class="stat"><b>${pronto}</b><span>Vencen en 7 días</span></div>
+    <div class="stat"><b>${L.length - act.length}</b><span>Vencidas / revocadas</span></div>
+    <div class="stat"><b>${money(ing)}</b><span>Ingresos registrados</span></div></div>
+    <div class="box"><h3>Últimas licencias</h3>${rec.length ? licTable(rec,false) : '<p style="color:var(--mut);font-weight:700">Aún no hay licencias. Genera la primera en la pestaña “Licencias”.</p>'}</div>`;
+}
+
+/* ----- Precios ----- */
+function tabPrecios(){
+  return `<div class="box"><h3>Planes y precios (${esc(DB.config.moneda)})</h3>
+  <p style="color:var(--mut);font-weight:700;font-size:.88rem;margin-bottom:14px">Los cambios se guardan al salir de cada campo. Una duración de 0 días significa sin vencimiento.</p>
+  ${DB.planes.map((p,i) => `<div class="pcard ${p.activo===false?'off':''}" data-i="${i}">
+    <div class="pcard-h"><span>${esc(p.nombre)} <small style="color:var(--mut)">(${esc(p.id)})</small></span>${p.id!=='gratis' ? `<button class="btn btn-back btn-sm" data-act="delPlan" data-i="${i}">🗑 Eliminar</button>` : ''}</div>
+    <div class="fgrid">
+      <label>Nombre<input class="inp" data-f="nombre" value="${esc(p.nombre)}"></label>
+      <label>Precio<input class="inp" type="number" min="0" step="0.01" data-f="precio" value="${p.precio}" ${p.id==='gratis'?'disabled':''}></label>
+      <label>Duración (días)<input class="inp" type="number" min="0" step="1" data-f="dias" value="${p.dias}" ${p.id==='gratis'?'disabled':''}></label>
+      <label>Etiqueta (ej. Ahorra 33%)<input class="inp" data-f="etiqueta" value="${esc(p.etiqueta||'')}"></label>
+      <label style="grid-column:span 2;min-width:220px">Beneficios (uno por línea)<textarea class="inp" data-f="beneficios">${esc((p.beneficios||[]).join('\n'))}</textarea></label>
+      <div style="display:flex;flex-direction:column;gap:10px;justify-content:center">
+        <label class="chk"><input type="checkbox" data-f="activo" ${p.activo!==false?'checked':''}> Visible en la página</label>
+        <label class="chk"><input type="checkbox" data-f="destacado" ${p.destacado?'checked':''}> Destacado (recomendado)</label></div>
+    </div></div>`).join('')}
+  <button class="btn btn-next" data-act="addPlan">+ Agregar plan</button></div>`;
+}
+
+/* ----- Licencias ----- */
+function licTable(list, acts){
+  const keys = LS.get('tow_keys', {});
+  return `<div class="tbl-wrap"><table class="tbl" id="licTbl"><thead><tr><th>Cliente</th><th>Plan</th><th>Clave</th><th>Emitida</th><th>Vence</th><th>Pagó</th><th>Estado</th>${acts?'<th></th>':''}</tr></thead><tbody>
+  ${list.map(l => {
+    const st = estadoLic(l), p = plan(l.plan);
+    const badge = st.ok ? '<span class="badge ok">Activa</span>' : (l.estado!=='activa' ? '<span class="badge no">Revocada</span>' : '<span class="badge exp">Vencida</span>');
+    return `<tr data-q="${esc((l.cliente+' '+l.contacto+' '+l.ult4).toLowerCase())}"><td>${esc(l.cliente)}<br><small style="color:var(--mut)">${esc(l.contacto||'')}</small></td><td>${esc(p ? p.nombre : l.plan)}</td>
+    <td><code>${keys[l.hash] ? esc(keys[l.hash]) : 'TOW-••••-••••-' + esc(l.ult4)}</code></td><td>${fmtD(l.emitida)}</td><td>${l.expira ? fmtD(l.expira) : 'Nunca'}</td><td>${money(l.pagado||0)}</td><td>${badge}</td>
+    ${acts ? `<td><div class="acts">
+      ${keys[l.hash] ? `<button class="btn btn-ghost" data-act="copyLic" data-id="${l.id}">Copiar</button>` : ''}
+      ${p && p.dias ? `<button class="btn btn-ghost" data-act="renewLic" data-id="${l.id}">Renovar</button>` : ''}
+      <button class="btn btn-ghost" data-act="toggleLic" data-id="${l.id}">${l.estado==='activa'?'Revocar':'Reactivar'}</button>
+      <button class="btn btn-back" data-act="delLic" data-id="${l.id}">🗑</button></div></td>` : ''}</tr>`;
+  }).join('')}</tbody></table></div>`;
+}
+function tabLicencias(){
+  const paid = DB.planes.filter(p => p.precio > 0 || p.id !== 'gratis');
+  return `<div class="box"><h3>Generar licencia (después de confirmar el pago)</h3><div class="fgrid">
+    <label>Plan<select class="inp" id="gPlan" data-chg="plan">${paid.map(p => `<option value="${esc(p.id)}">${esc(p.nombre)} — ${money(p.precio)}</option>`).join('')}</select></label>
+    <label>Cliente<input class="inp" id="gCli" placeholder="Nombre del cliente"></label>
+    <label>WhatsApp (opcional)<input class="inp" id="gCon" placeholder="51999999999"></label>
+    <label>Monto pagado<input class="inp" id="gMonto" type="number" step="0.01" min="0" value="${paid[0] ? paid[0].precio : 0}"></label>
+    </div><button class="btn btn-start" style="margin-top:14px;flex:none" data-act="crear">🔑 Generar clave</button></div>
+    <div class="box"><h3>Licencias emitidas (${DB.licencias.length})</h3>
+    <input class="inp" id="licSearch" placeholder="Buscar por cliente, WhatsApp o últimos 4 de la clave…" data-chg="search" style="margin-bottom:12px">
+    ${DB.licencias.length ? licTable(DB.licencias.slice().reverse(), true) : '<p style="color:var(--mut);font-weight:700">Sin licencias todavía.</p>'}
+    <p style="margin-top:12px;font-size:.8rem;color:var(--mut);font-weight:700">🔒 En licencias.json solo se guarda el hash de cada clave. La clave completa se muestra una vez al generarla y se recuerda solo en este navegador.</p></div>`;
+}
+function crearLic(){
+  const pid = $('gPlan').value, cli = $('gCli').value.trim(), con = $('gCon').value.trim(), m = parseFloat($('gMonto').value), p = plan(pid);
+  if(!cli){ toast('Escribe el nombre del cliente'); return; }
+  const key = genKey(), h = licHash(key), em = hoy();
+  const l = {id:'L'+Date.now().toString(36), hash:h, ult4:canon(key).slice(-4), plan:pid, cliente:cli, contacto:con, emitida:em, expira:p.dias ? addDays(em,p.dias) : null, estado:'activa', pagado:isNaN(m) ? p.precio : m};
+  DB.licencias.push(l);
+  const k = LS.get('tow_keys', {}); k[h] = key; LS.set('tow_keys', k);
+  saveDB(); renderAdmin(); keyModal(l, key);
+}
+function keyModal(l, key){
+  const p = plan(l.plan), url = location.href.split('#')[0] + '#licencia';
+  const msg = `¡Gracias por tu compra! 🎉\nTu licencia ${p.nombre}:\n${key}\nActívala aquí: ${url}`;
+  const wa = l.contacto ? `<a class="btn btn-start" target="_blank" rel="noopener" href="https://wa.me/${String(l.contacto).replace(/\D/g,'')}?text=${encodeURIComponent(msg)}">💬 Enviar por WhatsApp</a>` : '';
+  openModal(`<h3>✅ Licencia creada</h3><p style="font-weight:700;color:var(--mut)">${esc(l.cliente)} · ${esc(p.nombre)}${l.expira ? ' · vence ' + fmtD(l.expira) : ' · de por vida'}</p>
+    <div class="keybox">${esc(key)}</div>
+    <div class="modal-actions"><button class="btn btn-next" data-act="copyKey" data-k="${esc(key)}">📋 Copiar clave</button>${wa}<button class="btn btn-back" data-close>Cerrar</button></div>`);
+}
+
+/* ----- Ajustes ----- */
+function tabAjustes(){
+  const c = DB.config, g = c.gratis;
+  return `<div class="box"><h3>Negocio y cobros</h3><div class="fgrid">
+    <label>Nombre del negocio<input class="inp" data-c="negocio" value="${esc(c.negocio)}"></label>
+    <label>Símbolo de moneda<input class="inp" data-c="moneda" value="${esc(c.moneda)}"></label>
+    <label>WhatsApp de ventas<input class="inp" data-c="whatsapp" value="${esc(c.whatsapp)}" placeholder="51999999999"></label>
+    <label>Número Yape / Plin<input class="inp" data-c="yape" value="${esc(c.yape)}"></label>
+    <label>Titular de la cuenta<input class="inp" data-c="titular" value="${esc(c.titular)}"></label>
+    <label>Enlace de PayPal (opcional)<input class="inp" data-c="paypal" value="${esc(c.paypal||'')}" placeholder="https://paypal.me/tuusuario"></label></div></div>
+  <div class="box"><h3>Límites del plan Gratis</h3><div class="fgrid">
+    <label>Partidas gratis por día<input class="inp" type="number" min="0" data-g="partidas_por_dia" value="${g.partidas_por_dia}"></label></div>
+    <p style="margin:14px 0 6px;font-size:.78rem;font-weight:900;color:var(--mut);text-transform:uppercase">Categorías gratis</p>
+    <div class="fgrid">${CATS.map(x => `<label class="chk"><input type="checkbox" data-gl="categorias" value="${x[0]}" ${g.categorias.includes(x[0])?'checked':''}> ${x[1]}</label>`).join('')}</div>
+    <p style="margin:14px 0 6px;font-size:.78rem;font-weight:900;color:var(--mut);text-transform:uppercase">Dificultades gratis</p>
+    <div class="fgrid">${DIFFS.map(x => `<label class="chk"><input type="checkbox" data-gl="dificultades" value="${x[0]}" ${g.dificultades.includes(x[0])?'checked':''}> ${x[1]}</label>`).join('')}</div></div>
+  <div class="box"><h3>Cambiar PIN de administrador</h3><div class="fgrid"><label>Nuevo PIN (mín. 6 caracteres)<input class="inp" id="newPin" type="password" autocomplete="new-password"></label></div>
+    <button class="btn btn-red" style="margin-top:12px" data-act="savePin">Guardar PIN</button></div>`;
+}
+
+/* ----- Datos ----- */
+function tabDatos(){
+  const out = JSON.stringify(DB, null, 2);
+  return `<div class="box"><h3>licencias.json</h3>
+    <p style="color:var(--mut);font-weight:700;font-size:.9rem;margin-bottom:12px">Fuente actual: <b>${esc(DB_SRC)}</b>${LS.get('tow_db_admin',null) ? ' + cambios locales sin publicar' : ''}. Aquí viven precios, ajustes y licencias.</p>
+    <div class="modal-actions" style="margin-bottom:14px"><button class="btn btn-next" data-act="dl">⬇ Descargar licencias.json</button><button class="btn btn-ghost" data-act="imp">⬆ Importar JSON</button><button class="btn btn-back" data-act="resetLocal">↺ Descartar cambios locales</button></div>
+    <input type="file" id="impFile" accept="application/json,.json" hidden>
+    <textarea class="jsonview" readonly>${esc(out)}</textarea></div>
+    <div class="box"><h3>Cómo publicar</h3><ol style="margin-left:20px;font-weight:700;color:#334155;line-height:1.7;font-size:.92rem"><li>Haz los cambios aquí (precios, licencias, ajustes).</li><li>Pulsa <b>Descargar licencias.json</b>.</li><li>Sube el archivo a tu hosting, junto a <code>index.html</code> y <code>main.mp4</code>, reemplazando el anterior.</li></ol></div>`;
+}
+
+/* ----- Acciones del admin / globales ----- */
+const actions = {
+  login, activar,
+  logout(){ adminOK=false; try{sessionStorage.removeItem('tow_admin');}catch(e){} renderAdmin(); },
+  desactivar(){ LS.del('tow_lic'); renderChip(); renderLicense(); toast('Licencia quitada de este dispositivo'); },
+  addPlan(){ DB.planes.push({id:'plan'+Date.now().toString(36), nombre:'Nuevo plan', precio:19.9, dias:90, activo:true, destacado:false, etiqueta:'', beneficios:['Todo el contenido Pro']}); saveDB(); renderAdmin(); },
+  delPlan(t){ const p=DB.planes[+t.dataset.i]; if(DB.licencias.some(l=>l.plan===p.id)){ toast('Hay licencias con este plan; ocúltalo en lugar de eliminarlo'); return; } if(confirm('¿Eliminar el plan "'+p.nombre+'"?')){ DB.planes.splice(+t.dataset.i,1); saveDB(); renderAdmin(); } },
+  crear: crearLic,
+  copyKey(t){ copyText(t.dataset.k); },
+  copyLic(t){ const l=DB.licencias.find(x=>x.id===t.dataset.id); copyText(LS.get('tow_keys',{})[l.hash]); },
+  toggleLic(t){ const l=DB.licencias.find(x=>x.id===t.dataset.id); l.estado = l.estado==='activa' ? 'revocada' : 'activa'; saveDB(); renderAdmin(); },
+  renewLic(t){ const l=DB.licencias.find(x=>x.id===t.dataset.id), p=plan(l.plan); const base = (l.expira && diasRest(l.expira) > 0) ? l.expira : hoy(); l.expira = addDays(base, p.dias); l.estado='activa'; saveDB(); renderAdmin(); toast('Renovada hasta ' + fmtD(l.expira)); },
+  delLic(t){ if(confirm('¿Eliminar esta licencia definitivamente?')){ DB.licencias = DB.licencias.filter(x=>x.id!==t.dataset.id); saveDB(); renderAdmin(); } },
+  dl(){ download('licencias.json', JSON.stringify(DB, null, 2)); },
+  imp(){ $('impFile').click(); },
+  resetLocal(){ if(confirm('Se perderán los cambios locales y se recargará el JSON del servidor.')){ LS.del('tow_db_admin'); DB = JSON.parse(JSON.stringify(REMOTE_DB)); renderChip(); renderAdmin(); toast('Cambios locales descartados'); } },
+  savePin(){ const v=$('newPin').value; if(v.length<6){ toast('El PIN debe tener al menos 6 caracteres'); return; } DB.config.admin_pin_hash = sha256(DB.config.sal + v); saveDB(); $('newPin').value=''; toast('✅ PIN actualizado'); }
+};
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act],[data-buy],[data-close],[data-tab]');
+  if(!t){ if(e.target.id === 'modalOv') closeModal(); else if(e.target.closest('#modalBox a[href^="#"]')) closeModal(); return; }
+  if(t.dataset.close !== undefined) return closeModal();
+  if(t.dataset.buy) return openBuy(t.dataset.buy);
+  if(t.dataset.tab){ admTab = t.dataset.tab; return renderAdmin(); }
+  if(actions[t.dataset.act]) actions[t.dataset.act](t, e);
+});
+document.addEventListener('keydown', e => { if(e.key === 'Enter' && e.target.dataset && e.target.dataset.enter) actions[e.target.dataset.enter](); if(e.key === 'Escape') closeModal(); });
+document.addEventListener('input', e => {
+  if(e.target.id === 'licSearch'){ const q = e.target.value.toLowerCase(); document.querySelectorAll('#licTbl tbody tr').forEach(r => r.style.display = r.dataset.q.includes(q) ? '' : 'none'); }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if(t.id === 'gPlan'){ $('gMonto').value = plan(t.value).precio; return; }
+  if(t.id === 'impFile' && t.files[0]){
+    const r = new FileReader(); r.onload = () => { try { const o = JSON.parse(r.result); if(!o.config || !Array.isArray(o.planes) || !Array.isArray(o.licencias)) throw 0; DB = o; saveDB(); renderChip(); renderAdmin(); toast('✅ JSON importado'); } catch(err){ toast('El archivo no es un licencias.json válido'); } };
+    r.readAsText(t.files[0]); return;
+  }
+  if(!adminOK) return;
+  const card = t.closest('.pcard');
+  if(card && t.dataset.f){
+    const p = DB.planes[+card.dataset.i], f = t.dataset.f;
+    if(f==='beneficios') p[f] = t.value.split('\n').map(s=>s.trim()).filter(Boolean);
+    else if(t.type==='checkbox') p[f] = t.checked;
+    else if(t.type==='number') p[f] = Math.max(0, parseFloat(t.value) || 0);
+    else p[f] = t.value;
+    saveDB(); renderChip(); toast('💾 Guardado'); if(f==='nombre' || f==='activo') renderAdmin(); return;
+  }
+  if(t.dataset.c){ DB.config[t.dataset.c] = t.value.trim(); saveDB(); renderChip(); toast('💾 Guardado'); return; }
+  if(t.dataset.g){ DB.config.gratis[t.dataset.g] = Math.max(0, parseInt(t.value) || 0); saveDB(); toast('💾 Guardado'); return; }
+  if(t.dataset.gl){
+    const arr = DB.config.gratis[t.dataset.gl], v = t.value, i = arr.indexOf(v);
+    if(t.checked && i < 0) arr.push(v); if(!t.checked && i >= 0) arr.splice(i,1);
+    saveDB(); toast('💾 Guardado');
+  }
+});
+
+/* =====================================================================
+   JUEGO
+   ===================================================================== */
+let ST = { categories: ['geografia'], diff: 'facil', t1: 'Sabios', t2: 'Genios' };
+let s1=0, s2=0, pos=0, sec=0, ticker=null, locked=false, gameActive=false;
+const WIN=100, STEP=20, MAX_SHIFT=15;
+let preguntasUsadas = { "1": [], "2": [] };
+
+const PREGUNTAS_LOCALES = {
+  geografia: {
+    facil: [
+      { q:"¿Qué país tiene forma de bota?", correct:"Italia", options:["Italia","España","Grecia","Portugal"] },
+      { q:"¿Cuál es el océano más grande del mundo?", correct:"Pacífico", options:["Pacífico","Atlántico","Índico","Ártico"] },
+      { q:"¿En qué país se encuentra la torre Eiffel?", correct:"Francia", options:["Francia","Italia","Alemania","Reino Unido"] },
+      { q:"¿Cuál es la capital de España?", correct:"Madrid", options:["Madrid","Barcelona","Sevilla","Valencia"] },
+      { q:"¿Qué continente es el más grande del planeta?", correct:"Asia", options:["Asia","América","África","Europa"] },
+      { q:"¿Qué país es famoso por sus pirámides antiguas?", correct:"Egipto", options:["Egipto","México","Grecia","Perú"] }
+    ],
+    medio: [
+      { q:"¿Cuál es la capital de Australia?", correct:"Canberra", options:["Canberra","Sídney","Melbourne","Brisbane"] },
+      { q:"¿Qué río es el más largo y caudaloso del mundo?", correct:"Amazonas", options:["Amazonas","Nilo","Misisipi","Yangtsé"] },
+      { q:"¿Cuál es la capital de Canadá?", correct:"Ottawa", options:["Ottawa","Toronto","Vancouver","Montreal"] },
+      { q:"¿Qué país europeo tiene más islas?", correct:"Suecia", options:["Suecia","Grecia","Noruega","Filipinas"] },
+      { q:"¿En qué país se encuentra el Monte Fuji?", correct:"Japón", options:["Japón","China","Corea del Sur","Tailandia"] }
+    ],
+    dificil: [
+      { q:"¿Cuál es el país más densamente poblado del mundo?", correct:"Mónaco", options:["Mónaco","Singapur","Maldivas","Malta"] },
+      { q:"¿Qué línea imaginaria divide la Tierra en Norte y Sur?", correct:"Ecuador", options:["Ecuador","Greenwich","Trópico de Cáncer","Capricornio"] },
+      { q:"¿Cuál es el desierto más seco del mundo entero?", correct:"Atacama", options:["Atacama","Sahara","Gobi","Kalahari"] },
+      { q:"¿Cuál es la capital de Islandia?", correct:"Reikiavik", options:["Reikiavik","Oslo","Helsinki","Copenhague"] }
+    ]
+  },
+  historia: {
+    facil: [
+      { q:"¿Quién descubrió América en 1492?", correct:"Cristóbal Colón", options:["Cristóbal Colón","Magallanes","Marco Polo","Américo Vespucio"] },
+      { q:"¿Quiénes construyeron las pirámides de Giza?", correct:"Egipcios", options:["Egipcios","Romanos","Griegos","Aztecas"] },
+      { q:"¿Quién fue el líder del movimiento civil afroamericano en EE.UU.?", correct:"Martin Luther King", options:["Martin Luther King","Nelson Mandela","Malcolm X","Obama"] }
+    ],
+    medio: [
+      { q:"¿En qué año comenzó la Segunda Guerra Mundial?", correct:"1939", options:["1939","1914","1945","1929"] },
+      { q:"¿Quién fue el primer emperador romano?", correct:"César Augusto", options:["César Augusto","Julio César","Nerón","Calígula"] },
+      { q:"¿Qué famosa reina gobernó Egipto y se alió con Marco Antonio?", correct:"Cleopatra", options:["Cleopatra","Nefertiti","Isabel I","Catalina la Grande"] },
+      { q:"¿En qué país ocurrió la Revolución Francesa de 1789?", correct:"Francia", options:["Francia","Inglaterra","Alemania","Italia"] }
+    ],
+    dificil: [
+      { q:"¿Qué civilización usaba la escritura cuneiforme?", correct:"Sumerios", options:["Sumerios","Egipcios","Babilonios","Persas"] },
+      { q:"¿Quién fue el primer presidente de los Estados Unidos?", correct:"George Washington", options:["George Washington","Thomas Jefferson","Abraham Lincoln","John Adams"] },
+      { q:"¿En qué año cayó el Imperio Romano de Occidente?", correct:"476 d.C.", options:["476 d.C.","1453 d.C.","330 d.C.","100 d.C."] }
+    ]
+  },
+  ciencia: {
+    facil: [
+      { q:"¿Qué gas absorben las plantas para la fotosíntesis?", correct:"Dióxido de Carbono", options:["Dióxido de Carbono","Oxígeno","Nitrógeno","Hidrógeno"] },
+      { q:"¿Cuál es el planeta más cercano al Sol?", correct:"Mercurio", options:["Mercurio","Venus","Tierra","Marte"] },
+      { q:"¿Cuál es el único mamífero capaz de volar?", correct:"Murciélago", options:["Murciélago","Águila","Ardilla voladora","Avestruz"] }
+    ],
+    medio: [
+      { q:"¿Cuál es el símbolo químico del Oro?", correct:"Au", options:["Au","Ag","Fe","O"] },
+      { q:"¿Cuántos huesos tiene el cuerpo humano adulto?", correct:"206", options:["206","212","198","208"] },
+      { q:"¿Qué planeta es conocido como el Planeta Rojo?", correct:"Marte", options:["Marte","Júpiter","Saturno","Venus"] },
+      { q:"¿Cuál es el órgano más grande del cuerpo humano?", correct:"La piel", options:["La piel","El hígado","El corazón","Los pulmones"] }
+    ],
+    dificil: [
+      { q:"¿Cuál es la velocidad de la luz aproximadamente?", correct:"300.000 km/s", options:["300.000 km/s","150.000 km/s","500.000 km/s","1.000.000 km/s"] },
+      { q:"¿Qué partícula subatómica tiene carga negativa?", correct:"Electrón", options:["Electrón","Protón","Neutrón","Quark"] },
+      { q:"¿Quién propuso la teoría de la Relatividad General?", correct:"Albert Einstein", options:["Albert Einstein","Isaac Newton","Galileo Galilei","Nikola Tesla"] }
+    ]
+  },
+  entretenimiento: {
+    facil: [
+      { q:"¿Cómo se llama el ratón más famoso de Disney?", correct:"Mickey Mouse", options:["Mickey Mouse","Donald","Goofy","Pluto"] },
+      { q:"¿Qué superhéroe se viste de murciélago?", correct:"Batman", options:["Batman","Superman","Spiderman","Iron Man"] },
+      { q:"¿Cómo se llama el ogro verde de DreamWorks?", correct:"Shrek", options:["Shrek","Fiona","Burro","Gato con Botas"] }
+    ],
+    medio: [
+      { q:"¿Qué banda británica cantaba 'Hey Jude'?", correct:"The Beatles", options:["The Beatles","Queen","The Rolling Stones","Pink Floyd"] },
+      { q:"¿Qué serie de televisión presenta los reinos de Westeros?", correct:"Game of Thrones", options:["Game of Thrones","The Witcher","Vikings","Breaking Bad"] },
+      { q:"¿Cuál es el nombre del mago protagonista de la saga de J.K. Rowling?", correct:"Harry Potter", options:["Harry Potter","Ron Weasley","Hermione Granger","Voldemort"] }
+    ],
+    dificil: [
+      { q:"¿Qué película ganó el primer Óscar a Mejor Película de Animación?", correct:"Shrek", options:["Shrek","Toy Story","Monsters Inc.","Buscando a Nemo"] },
+      { q:"¿Quién dirigió la galardonada película 'Inception' (Origen)?", correct:"Christopher Nolan", options:["Christopher Nolan","Steven Spielberg","Quentin Tarantino","James Cameron"] }
+    ]
+  },
+  deportes: {
+    facil: [
+      { q:"¿Cada cuántos años se celebran los Juegos Olímpicos?", correct:"4", options:["4","2","3","5"] },
+      { q:"¿Qué deporte juega Lionel Messi?", correct:"Fútbol", options:["Fútbol","Baloncesto","Tenis","Golf"] },
+      { q:"¿Cuántos jugadores de fútbol entran a la cancha por equipo?", correct:"11", options:["11","10","12","9"] }
+    ],
+    medio: [
+      { q:"¿Qué país ha ganado más Mundiales de Fútbol?", correct:"Brasil", options:["Brasil","Alemania","Italia","Argentina"] },
+      { q:"¿En qué país nació el tenis de mesa (Ping-Pong)?", correct:"Inglaterra", options:["Inglaterra","China","Japón","Estados Unidos"] },
+      { q:"¿Qué tenista masculino tiene el récord de más Grand Slams ganados?", correct:"Novak Djokovic", options:["Novak Djokovic","Rafael Nadal","Roger Federer","Carlos Alcaraz"] }
+    ],
+    dificil: [
+      { q:"¿Cuántos anillos tiene la bandera olímpica?", correct:"5", options:["5","6","4","7"] },
+      { q:"¿Qué deporte se practica en el torneo de Augusta National?", correct:"Golf", options:["Golf","Tenis","Polo","Críquet"] }
+    ]
+  },
+  arte: {
+    facil: [
+      { q:"¿Quién pintó la famosa 'Mona Lisa'?", correct:"Leonardo da Vinci", options:["Leonardo da Vinci","Miguel Ángel","Picasso","Van Gogh"] },
+      { q:"¿Qué instrumento musical tiene 88 teclas?", correct:"Piano", options:["Piano","Guitarra","Violín","Flauta"] }
+    ],
+    medio: [
+      { q:"¿Quién escribió 'Don Quijote de la Mancha'?", correct:"Miguel de Cervantes", options:["Miguel de Cervantes","Gabriel García Márquez","Shakespeare","Lope de Vega"] },
+      { q:"¿Qué famoso pintor se cortó la oreja izquierda?", correct:"Vincent van Gogh", options:["Vincent van Gogh","Pablo Picasso","Salvador Dalí","Claude Monet"] }
+    ],
+    dificil: [
+      { q:"¿En qué ciudad nació el pintor Pablo Picasso?", correct:"Málaga", options:["Málaga","Madrid","Barcelona","Sevilla"] },
+      { q:"¿Quién esculpió la icónica estatua del 'David'?", correct:"Miguel Ángel", options:["Miguel Ángel","Leonardo da Vinci","Donatello","Bernini"] }
+    ]
+  }
+};
+
+function obtenerPreguntaLocal(team) {
+  const cats = ST.categories && ST.categories.length ? ST.categories : ['geografia'];
+  const nivel = ST.diff || 'facil';
+  let pozo = [];
+  cats.forEach(c => { if (PREGUNTAS_LOCALES[c] && PREGUNTAS_LOCALES[c][nivel]) pozo = pozo.concat(PREGUNTAS_LOCALES[c][nivel]); });
+  if (!pozo.length) pozo = PREGUNTAS_LOCALES.geografia.facil;
+  let libres = pozo.filter(p => !preguntasUsadas[team].includes(p.q));
+  if (!libres.length) { preguntasUsadas[team] = []; libres = pozo; }
+  const el = libres[Math.floor(Math.random() * libres.length)];
+  preguntasUsadas[team].push(el.q);
+  return el;
+}
+const normalize = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,'').trim();
+
+/* ----- Video / Audio ----- */
+function initVideo(){ const v=$('arena-video'); if(!v) return; v.muted=true; v.defaultMuted=true; v.setAttribute('playsinline',''); v.play().catch(()=>{}); }
+let actx=null, masterGain=null, analyser=null, videoConnected=false, videoMuted=true, audioUnlocked=false;
+function initAudio(){
+  if(actx) return;
+  try { actx=new (window.AudioContext||window.webkitAudioContext)(); masterGain=actx.createGain(); masterGain.gain.setValueAtTime(.8,actx.currentTime); masterGain.connect(actx.destination); } catch(e){}
+}
+function unlockVideoAudio(){
+  initAudio(); if(actx && actx.state==='suspended') actx.resume();
+  const v=$('arena-video'); if(v){ v.muted=false; videoMuted=false; }
+  audioUnlocked=true; connectVideoToGraph(); updateSoundBtn(); flashVolVis();
+}
+function connectVideoToGraph(){
+  /* En file:// el navegador silenciaría el video al pasarlo por WebAudio; solo se usa el visualizador con http(s). */
+  if(videoConnected || !actx || location.protocol==='file:') return;
+  const v=$('arena-video'); if(!v) return;
+  try { const src=actx.createMediaElementSource(v); analyser=actx.createAnalyser(); analyser.fftSize=32; src.connect(analyser); analyser.connect(masterGain); videoConnected=true; animateVolBars(); } catch(e){}
+}
+function animateVolBars(){
+  if(!analyser) return;
+  const bars=document.querySelectorAll('.vb'), data=new Uint8Array(analyser.frequencyBinCount);
+  (function tick(){
+    if(analyser && !videoMuted){ analyser.getByteFrequencyData(data); bars.forEach((b,i)=>{ b.style.height=Math.max(3,(data[Math.min(i*2,data.length-1)]/255)*24)+'px'; }); }
+    requestAnimationFrame(tick);
+  })();
+}
+function flashVolVis(){ const v=$('volVis'); if(v){ v.classList.add('show'); clearTimeout(v._t); v._t=setTimeout(()=>v.classList.remove('show'),2000); } }
+function toggleMute(){
+  if(!audioUnlocked){ unlockVideoAudio(); return; }
+  videoMuted=!videoMuted; const v=$('arena-video'); if(v) v.muted=videoMuted; updateSoundBtn(); flashVolVis();
+}
+function updateSoundBtn(){ const b=$('soundBtn'); if(b) b.textContent=(!audioUnlocked||videoMuted)?'🔇':'🔊'; }
+function sfxNode(freq,type,dur,vol,delay=0,freqEnd=null){
+  if(!actx||actx.state==='suspended') return;
+  try{ const t=actx.currentTime+delay, o=actx.createOscillator(), g=actx.createGain(); o.type=type; o.frequency.setValueAtTime(freq,t); if(freqEnd) o.frequency.exponentialRampToValueAtTime(freqEnd,t+dur);
+    o.connect(g); g.connect(masterGain); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+.01); g.gain.exponentialRampToValueAtTime(.001,t+dur); o.start(t); o.stop(t+dur+.02); }catch(e){}
+}
+const playCorrect=()=>{ sfxNode(523.25,'sine',.12,.15,0); sfxNode(659.25,'sine',.12,.12,.06); };
+const playWrong=()=>sfxNode(220,'sawtooth',.25,.15,0,110);
+const playWin=()=>[523.25,659.25,783.99,1046.5].forEach((f,i)=>sfxNode(f,'triangle',.2,.15,i*.08));
+
+/* ----- Monetización: límites del plan gratis ----- */
+const catLocked  = c => !isPro() && !DB.config.gratis.categorias.includes(c);
+const diffLocked = d => !isPro() && !DB.config.gratis.dificultades.includes(d);
+const lockedToast = () => toast('🔒 Disponible con licencia Pro', {label:'Ver planes', href:'#precios'});
+function partidasHoy(){ const r=LS.get('tow_daily',{}); return r.f===hoy() ? r.n : 0; }
+function consumirPartida(){
+  if(isPro()) return true;
+  const lim=DB.config.gratis.partidas_por_dia, n=partidasHoy();
+  if(n>=lim){ toast('⏳ Se acabaron tus ' + lim + ' partidas gratis de hoy', {label:'Pasar a Pro', href:'#precios'}); return false; }
+  LS.set('tow_daily',{f:hoy(), n:n+1}); updateFreeBar(); return true;
+}
+function updateFreeBar(){
+  const el=$('freeBar'); if(!el) return; const c=licActual();
+  if(c){ el.className='freebar pro'; el.innerHTML='✨ Licencia <b>'+esc(c.plan.nombre)+'</b> activa · todo desbloqueado'; }
+  else { const lim=DB.config.gratis.partidas_por_dia, left=Math.max(0,lim-partidasHoy()); el.className='freebar'; el.innerHTML='Plan Gratis · te quedan <b>'+left+'</b> de '+lim+' partidas hoy · <a href="#precios">Desbloquear Pro</a>'; }
+}
+function applyLocks(){
+  document.querySelectorAll('.cat-btn').forEach(b=>{
+    const L=catLocked(b.dataset.cat), k=b.querySelector('.lock');
+    b.classList.toggle('locked',L);
+    if(L && !k) b.insertAdjacentHTML('beforeend','<span class="lock">🔒</span>'); if(!L && k) k.remove();
+    if(L && ST.categories.includes(b.dataset.cat)){ ST.categories=ST.categories.filter(c=>c!==b.dataset.cat); b.classList.remove('sel'); }
+  });
+  if(!ST.categories.length){ const f=document.querySelector('.cat-btn:not(.locked)'); if(f){ ST.categories=[f.dataset.cat]; f.classList.add('sel'); } }
+  document.querySelectorAll('.diff-btn').forEach(b=>{
+    const L=diffLocked(b.dataset.diff), k=b.querySelector('.lock');
+    b.classList.toggle('locked',L);
+    if(L && !k) b.insertAdjacentHTML('beforeend','<span class="lock">🔒</span>'); if(!L && k) k.remove();
+  });
+  if(diffLocked(ST.diff)){ const f=document.querySelector('.diff-btn:not(.locked)'); if(f) selDiff(f); }
+  updateFreeBar();
+  $('proBadge').textContent = isPro() ? '✨PRO' : 'FREE'; $('proBadge').className = 'ai-badge' + (isPro() ? '' : ' free');
+}
+
+/* ----- Flujo ----- */
+function gostep(n){
+  if(n===2 && ST.categories.length===0){ $('err1').textContent='¡Elige al menos una categoría temática!'; return; }
+  $('err1').textContent='';
+  [1,2,3].forEach(i=>{ $('s'+i).style.display = i===n ? '' : 'none'; const d=$('d'+i); d.className = i<n ? 'sdot done' : (i===n ? 'sdot active' : 'sdot'); const l=$('l'+i); if(l) l.className = i<n ? 'sline done' : 'sline'; });
+}
+function toggleCat(btn){
+  const cat=btn.dataset.cat; if(catLocked(cat)){ lockedToast(); return; }
+  const i=ST.categories.indexOf(cat);
+  if(i>=0){ if(ST.categories.length===1) return; ST.categories.splice(i,1); btn.classList.remove('sel'); }
+  else { ST.categories.push(cat); btn.classList.add('sel'); }
+}
+function selDiff(btn){
+  if(diffLocked(btn.dataset.diff)){ lockedToast(); return; }
+  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); ST.diff=btn.dataset.diff;
+}
+function startGame(){
+  if(!consumirPartida()) return;
+  ST.t1=$('n1').value.trim()||'Sabios'; ST.t2=$('n2').value.trim()||'Genios';
+  $('ghn1').textContent=$('pn1').textContent=ST.t1; $('ghn2').textContent=$('pn2').textContent=ST.t2;
+  $('setup').style.display='none'; $('game').style.display='flex'; $('soundBtn').style.display='flex';
+  gameActive=true; initVideo(); unlockVideoAudio(); resetGame();
+}
+function loadQuestionForTeam(team){
+  const grid=$('opts'+team), q=obtenerPreguntaLocal(team);
+  $('eq'+team).textContent=q.q; grid.innerHTML='';
+  [...q.options].sort(()=>Math.random()-.5).forEach(opt=>{
+    const b=document.createElement('button'); b.className='opt-btn'; b.textContent=opt;
+    b.onclick=()=>checkAnswer(team, normalize(opt), normalize(q.correct)); grid.appendChild(b);
+  });
+}
+function resetGame(){
+  s1=0; s2=0; pos=0; sec=0; locked=false; preguntasUsadas={"1":[],"2":[]};
+  $('clk').textContent='00:00'; updateScores(); moveVideo(); loadQuestionForTeam('1'); loadQuestionForTeam('2');
+  if(ticker) clearInterval(ticker);
+  ticker=setInterval(()=>{ sec++; $('clk').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0'); },1000);
+}
+function updateScores(){ $('ghsc1').textContent=$('ps1').textContent=s1; $('ghsc2').textContent=$('ps2').textContent=s2; }
+function checkAnswer(team, selected, correct){
+  if(locked) return;
+  const isA=team==='1', fb=$('fb'+team), panelEl=$('pb'+team), btns=document.querySelectorAll('#opts'+team+' .opt-btn');
+  btns.forEach(b=>b.disabled=true);
+  if(selected===correct){
+    fb.innerHTML='✅ ¡Correcto!'; fb.className='fb fb-ok';
+    panelEl.classList.add('flash-ok'); setTimeout(()=>panelEl.classList.remove('flash-ok'),450); playCorrect();
+    if(isA){ s1++; pos=Math.max(-WIN,pos-STEP); } else { s2++; pos=Math.min(WIN,pos+STEP); }
+    updateScores(); moveVideo();
+    const top=$(isA?'ghsc1':'ghsc2'); top.classList.add('pop'); setTimeout(()=>top.classList.remove('pop'),350);
+    if(Math.abs(pos)>=WIN){ locked=true; setTimeout(()=>{ if(gameActive) showWin(team); },500); }
+    else setTimeout(()=>{ fb.textContent=''; if(gameActive) loadQuestionForTeam(team); },800);
+  } else {
+    fb.innerHTML='❌ ¡Incorrecto!'; fb.className='fb fb-err';
+    panelEl.classList.add('flash-err'); setTimeout(()=>panelEl.classList.remove('flash-err'),450); playWrong();
+    setTimeout(()=>{ fb.textContent=''; btns.forEach(b=>b.disabled=false); },1000);
+  }
+}
+function moveVideo(){ const v=$('arena-video'); if(v) v.style.transform=`scale(1.1) translate3d(${(pos/WIN)*MAX_SHIFT}%,0,0)`; }
+function showWin(team){
+  clearInterval(ticker); const blue=team==='1';
+  $('wn').textContent=blue?ST.t1:ST.t2; $('wn').style.color=blue?'var(--blue)':'var(--red)';
+  $('wsn1').textContent=ST.t1; $('wsn2').textContent=ST.t2; $('wsc1').textContent=s1; $('wsc2').textContent=s2; $('wst').textContent=$('clk').textContent;
+  $('winUp').style.display = isPro() ? 'none' : 'block';
+  $('ov').classList.add('show'); confetti(blue?'#2563eb':'#dc2626'); playWin();
+}
+function restartGame(){
+  if(!consumirPartida()){ backSetup(); return; }
+  $('ov').classList.remove('show'); resetGame();
+}
+function backSetup(){
+  $('ov').classList.remove('show'); clearInterval(ticker); gameActive=false;
+  $('soundBtn').style.display='none';
+  const v=$('arena-video'); if(v){ v.muted=true; } videoMuted=true;
+  $('game').style.display='none'; $('setup').style.display='flex'; gostep(1); updateSoundBtn(); applyLocks();
+}
+function abortGame(){ backSetup(); const v=$('arena-video'); if(v) v.pause(); }
+function confetti(base){
+  const pal=[base,'#fbbf24','#10b981','#38bdf8','#a78bfa'];
+  for(let i=0;i<60;i++){ const c=document.createElement('div'); c.className='cp'; const s=6+Math.random()*8;
+    c.style.cssText=`left:${Math.random()*100}vw;top:-20px;width:${s}px;height:${s}px;background:${pal[Math.floor(Math.random()*pal.length)]};border-radius:${Math.random()>.4?'50%':'2px'};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.5}s`;
+    document.body.appendChild(c); c.addEventListener('animationend',()=>c.remove()); }
+}
+
+/* =====================================================================
+   ARRANQUE
+   ===================================================================== */
+loadDB().then(() => { renderChip(); route(); });
+</script>
+</body>
+</html>
 
