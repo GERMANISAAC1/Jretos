@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "actualizado": "2026-11-02T05:52:00.818Z",
+  "config": {
+    "negocio": "Tug of War Pro",
+    "moneda": "S/",
+    "whatsapp": "51972768061",
+    "yape": "971419940",
+    "titular": "Kety",
+    "paypal": "",
+    "sal": "tow-2026",
+    "admin_pin_hash": "373aa893716a2dd907a4f76c76069349b831a1de12291775d6e59104323bd1f0",
+    "gratis": {
+      "categorias": [
+        "geografia",
+        "ciencia"
+      ],
+      "dificultades": [
+        "facil"
+      ],
+      "partidas_por_dia": 3
+    }
+  },
+  "planes": [
+    {
+      "id": "gratis",
+      "nombre": "Gratis",
+      "precio": 0,
+      "dias": 0,
+      "activo": true,
+      "destacado": false,
+      "etiqueta": "",
+      "beneficios": [
+        "2 categorías (Geografía y Ciencia)",
+        "Dificultad Fácil",
+        "3 partidas por día"
+      ]
+    },
+    {
+      "id": "mensual",
+      "nombre": "Pro Mensual",
+      "precio": 9.9,
+      "dias": 30,
+      "activo": true,
+      "destacado": false,
+      "etiqueta": "",
+      "beneficios": [
+        "Las 6 categorías",
+        "Fácil, Medio y Difícil",
+        "Partidas ilimitadas",
+        "Renovación manual cada mes"
+      ]
+    },
+    {
+      "id": "anual",
+      "nombre": "Pro Anual",
+      "precio": 39.9,
+      "dias": 365,
+      "activo": true,
+      "destacado": true,
+      "etiqueta": "Ahorra 33%",
+      "beneficios": [
+        "Las 6 categorías",
+        "Fácil, Medio y Difícil",
+        "Partidas ilimitadas",
+        "12 meses de acceso"
+      ]
+    },
+    {
+      "id": "vitalicia",
+      "nombre": "Pro de por vida",
+      "precio": 79,
+      "dias": 0,
+      "activo": true,
+      "destacado": false,
+      "etiqueta": "Pago único",
+      "beneficios": [
+        "Todo lo de Pro",
+        "Sin vencimiento",
+        "Futuras preguntas incluidas"
+      ]
+    },
+    {
+      "id": "planmvyubsgz",
+      "nombre": "Por día ",
+      "precio": 3,
+      "dias": 2,
+      "activo": true,
+      "destacado": false,
+      "etiqueta": "",
+      "beneficios": [
+        "Todo el contenido Pro"
+      ]
+    }
+  ],
+  "licencias": [
+    {
+      "id": "Ldemo",
+      "hash": "9efc6b0e53f86c1edded9d3019a28ab514870c631e9827b33c38b85de4939bdf",
+      "ult4": "0001",
+      "plan": "anual",
+      "cliente": "DEMO (bórrala antes de publicar)",
+      "contacto": "",
+      "emitida": "2026-11-01",
+      "expira": "2027-11-01",
+      "estado": "activa",
+      "pagado": 0
+    },
+    {
+      "id": "Lmvyu4ug5",
+      "hash": "779ae8e18db6317951a4549e77a0aa027e113696d65446ce7053822082b3d33b",
+      "ult4": "VP26",
+      "plan": "mensual",
+      "cliente": "Isaac",
+      "contacto": "51972768061",
+      "emitida": "2026-11-02",
+      "expira": "2026-12-02",
+      "estado": "activa",
+      "pagado": 9.9
+    }
+  ]
+}
