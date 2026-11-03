@@ -1013,17 +1013,59 @@ const EXTRA={
 for(const c in EXTRA) for(const d in EXTRA[c]) PREGUNTAS_LOCALES[c][d].push(...EXTRA[c][d]);
 
 /* ----- Selección de preguntas sin repetir (compartido por ambos equipos y entre partidas) ----- */
-const usadas = new Set();
+const EXTRA2={
+ geografia:{
+  facil:[_q("¿Cuál es la capital de Italia?","Roma","Milán","Venecia","Nápoles"),_q("¿En qué continente está Egipto?","África","Asia","Europa","América"),_q("¿Cuál es la capital de México?","Ciudad de México","Guadalajara","Monterrey","Puebla")],
+  medio:[_q("¿Cuál es la capital de Argentina?","Buenos Aires","Córdoba","Rosario","Mendoza"),_q("¿Cuál es la montaña más alta del mundo?","Everest","K2","Kilimanjaro","Mont Blanc"),_q("¿Qué mar separa Europa de África?","Mediterráneo","Báltico","Negro","Caribe")],
+  dificil:[_q("¿Cuál es el país más pequeño del mundo?","Vaticano","Mónaco","San Marino","Liechtenstein"),_q("¿Cuál es la capital de Nueva Zelanda?","Wellington","Auckland","Christchurch","Sídney"),_q("¿Qué estrecho separa España de Marruecos?","Gibraltar","Bósforo","Magallanes","Ormuz")]},
+ historia:{
+  facil:[_q("¿Qué imperio construyó el Coliseo?","Romano","Griego","Persa","Otomano"),_q("¿Qué barco se hundió en 1912 tras chocar con un iceberg?","Titanic","Britannic","Santa María","Bismarck"),_q("¿Cómo se llamaba el faraón niño de la famosa máscara dorada?","Tutankamón","Ramsés II","Keops","Akenatón")],
+  medio:[_q("¿Quién lideró la independencia de la India con la no violencia?","Mahatma Gandhi","Nehru","Buda","Nelson Mandela"),_q("¿En qué año llegó el ser humano a la Luna?","1969","1959","1972","1965"),_q("¿Qué emperador francés fue derrotado en Waterloo?","Napoleón Bonaparte","Luis XIV","Carlomagno","Julio César")],
+  dificil:[_q("¿En qué año comenzó la Primera Guerra Mundial?","1914","1918","1905","1939"),_q("¿Qué imperio gobernaba Constantinopla antes de 1453?","Bizantino","Otomano","Persa","Mongol"),_q("¿Qué reina inglesa da nombre a la era de 1837 a 1901?","Victoria","Isabel I","Ana","María Estuardo")]},
+ ciencia:{
+  facil:[_q("¿Cuántas patas tiene una araña?","8","6","10","4"),_q("¿Cuál es el planeta más grande del Sistema Solar?","Júpiter","Saturno","Neptuno","Tierra"),_q("¿Qué estado del agua es el hielo?","Sólido","Líquido","Gaseoso","Plasma")],
+  medio:[_q("¿Qué gas respiramos para vivir?","Oxígeno","Nitrógeno","Helio","Hidrógeno"),_q("¿Cuál es el hueso más largo del cuerpo humano?","Fémur","Tibia","Húmero","Columna"),_q("¿Cuál es el símbolo químico de la plata?","Ag","Au","Pt","Sn")],
+  dificil:[_q("¿Cuál es el número atómico del carbono?","6","12","8","4"),_q("¿Qué científico descubrió la penicilina?","Alexander Fleming","Louis Pasteur","Marie Curie","Robert Koch"),_q("¿Qué metal es líquido a temperatura ambiente?","Mercurio","Plomo","Estaño","Cobre")]},
+ entretenimiento:{
+  facil:[_q("¿Cómo se llama el niño que nunca crece y vive en el País de Nunca Jamás?","Peter Pan","Pinocho","Mowgli","Aladdín"),_q("¿Cómo se llama el vaquero de Toy Story?","Woody","Buzz","Rex","Slinky"),_q("¿Quién vive en una piña debajo del mar?","Bob Esponja","Patricio","Calamardo","Don Cangrejo")],
+  medio:[_q("¿Qué cantante colombiana canta 'Hips Don't Lie'?","Shakira","Karol G","Selena Gómez","Jennifer Lopez"),_q("¿Cómo se llama la ciudad de Batman?","Gotham","Metrópolis","Springfield","Nueva York"),_q("¿Qué película animada tiene la canción 'Hakuna Matata'?","El Rey León","Aladdín","Tarzán","Mulán")],
+  dificil:[_q("¿Qué actor interpretó a Jack Dawson en 'Titanic'?","Leonardo DiCaprio","Brad Pitt","Matt Damon","Johnny Depp"),_q("¿En qué año se estrenó la primera película de 'Star Wars'?","1977","1980","1983","1975"),_q("¿Quién compuso la banda sonora de 'Star Wars'?","John Williams","Hans Zimmer","Ennio Morricone","Danny Elfman")]},
+ deportes:{
+  facil:[_q("¿Con qué parte del cuerpo no se puede tocar el balón en fútbol (salvo el portero)?","Las manos","Los pies","La cabeza","El pecho"),_q("¿En qué deporte se usa una canasta?","Baloncesto","Fútbol","Tenis","Natación"),_q("¿Cuál es el deporte más popular del mundo?","Fútbol","Béisbol","Baloncesto","Críquet")],
+  medio:[_q("¿Qué país organizó el Mundial de Fútbol de 2014?","Brasil","Rusia","Sudáfrica","Alemania"),_q("¿Cuántos jugadores tiene un equipo de voleibol en cancha?","6","5","7","8"),_q("¿En qué deporte destaca Usain Bolt?","Atletismo","Natación","Ciclismo","Boxeo")],
+  dificil:[_q("¿Qué selección ganó el Mundial de Fútbol de 2014?","Alemania","Brasil","Argentina","España"),_q("¿Cuántos hoyos tiene un campo de golf estándar?","18","9","12","16"),_q("¿Cuántos jugadores tiene en cancha un equipo de rugby union?","15","11","13","12")]},
+ arte:{
+  facil:[_q("¿Cuántos colores tiene el arcoíris?","7","5","6","8"),_q("¿Qué instrumento toca un músico con baquetas?","Batería","Violín","Flauta","Guitarra"),_q("¿Cuáles son los colores primarios?","Rojo, azul y amarillo","Verde, naranja y morado","Rojo, verde y negro","Blanco, negro y gris")],
+  medio:[_q("¿Quién escribió 'Romeo y Julieta'?","William Shakespeare","Miguel de Cervantes","Dante Alighieri","Molière"),_q("¿Quién pintó 'Las Meninas'?","Diego Velázquez","Francisco de Goya","El Greco","Murillo"),_q("¿En qué museo se exhibe la Mona Lisa?","El Louvre","El Prado","Uffizi","British Museum")],
+  dificil:[_q("¿Quién escribió 'La Divina Comedia'?","Dante Alighieri","Petrarca","Boccaccio","Virgilio"),_q("¿Qué pintor es famoso por 'El grito'?","Edvard Munch","Gustav Klimt","Egon Schiele","Paul Gauguin"),_q("¿Quién compuso 'Las cuatro estaciones'?","Antonio Vivaldi","Bach","Haendel","Mozart")]},
+ matematicas:{
+  facil:[_q("¿Cuánto es 5 × 5?","25","20","30","15"),_q("¿Cuántos minutos tiene una hora?","60","100","30","90"),_q("¿Cuánto es 100 − 45?","55","65","45","54")],
+  medio:[_q("¿Cuántos lados tiene un hexágono?","6","5","8","7"),_q("¿Cuánto es 2/5 de 100?","40","25","20","45"),_q("¿Cuál es el perímetro de un cuadrado de lado 7?","28","49","14","21")],
+  dificil:[_q("¿Cuánto es 3 elevado al cubo?","27","9","18","81"),_q("¿Cuál es el siguiente número primo después de 13?","17","15","19","14"),_q("¿Cuánto es 1/2 + 1/3?","5/6","2/5","3/5","1/6")]}
+};
+for(const c in EXTRA2) for(const d in EXTRA2[c]) PREGUNTAS_LOCALES[c][d].push(...EXTRA2[c][d]);
+
+/* Historial persistente: una pregunta ya usada no vuelve a salir (en ningún equipo ni partida)
+   hasta que se agoten TODAS las preguntas de las categorías elegidas. */
+const usadas = new Set(LS.get('tow_usadas', []));
+const enPantalla = {};
+const guardarUsadas = () => LS.set('tow_usadas', [...usadas]);
 function obtenerPreguntaLocal(team) {
   const cats = ST.categories && ST.categories.length ? ST.categories : ['geografia'];
   const nivel = ST.diff || 'facil';
-  let pozo = [];
-  cats.forEach(c => { if (PREGUNTAS_LOCALES[c] && PREGUNTAS_LOCALES[c][nivel]) pozo = pozo.concat(PREGUNTAS_LOCALES[c][nivel]); });
-  if (!pozo.length) pozo = PREGUNTAS_LOCALES.geografia.facil;
-  let libres = pozo.filter(p => !usadas.has(p.q));
-  if (!libres.length) { pozo.forEach(p => usadas.delete(p.q)); libres = pozo; }
-  const el = libres[Math.floor(Math.random() * libres.length)];
-  usadas.add(el.q);
+  const otra = team === '1' ? '2' : '1';
+  const pozoDe = niveles => { let a = []; cats.forEach(c => niveles.forEach(n => { if (PREGUNTAS_LOCALES[c] && PREGUNTAS_LOCALES[c][n]) a = a.concat(PREGUNTAS_LOCALES[c][n]); })); return a; };
+  const libres = a => a.filter(p => !usadas.has(p.q) && p.q !== enPantalla[otra]);
+  const nivelOrden = [nivel, ...['facil','medio','dificil'].filter(n => n !== nivel)];
+  let l = libres(pozoDe([nivel]));                 // 1) mismas categorías y dificultad
+  if (!l.length) l = libres(pozoDe(nivelOrden));   // 2) mismas categorías, otra dificultad
+  if (!l.length) {                                 // 3) todo agotado: reiniciar solo estas categorías
+    pozoDe(nivelOrden).forEach(p => usadas.delete(p.q));
+    l = libres(pozoDe([nivel]));
+    if (!l.length) l = pozoDe([nivel]);
+  }
+  const el = l[Math.floor(Math.random() * l.length)];
+  usadas.add(el.q); enPantalla[team] = el.q; guardarUsadas();
   return el;
 }
 const normalize = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,'').trim();
